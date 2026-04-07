@@ -4,57 +4,14 @@
     "type": "minecraft:noise",
     "settings": "bloodline:pale_cradle",
     "biome_source": {
-      "type": "minecraft:multi_noise",
+      "type": "minecraft:checkerboard",
       "biomes": [
-        {
-          "biome": "bloodline:pale_wheat_fields",
-          "parameters": {
-            "temperature": 0.5,
-            "humidity": 0.5,
-            "continentalness": 0.5,
-            "erosion": 0.5,
-            "weirdness": 0.0,
-            "depth": 0.0,
-            "offset": 0.0
-          }
-        },
-        {
-          "biome": "bloodline:sparse_wheat_plains",
-          "parameters": {
-            "temperature": 0.5,
-            "humidity": 0.3,
-            "continentalness": 0.5,
-            "erosion": 0.5,
-            "weirdness": 0.2,
-            "depth": 0.0,
-            "offset": 0.0
-          }
-        },
-        {
-          "biome": "bloodline:pale_wheat_fields",
-          "parameters": {
-            "temperature": 0.5,
-            "humidity": 0.5,
-            "continentalness": 0.5,
-            "erosion": 0.5,
-            "weirdness": 0.5,
-            "depth": 0.0,
-            "offset": 0.0
-          }
-        },
-        {
-          "biome": "bloodline:sparse_wheat_plains",
-          "parameters": {
-            "temperature": 0.5,
-            "humidity": 0.3,
-            "continentalness": 0.5,
-            "erosion": 0.5,
-            "weirdness": -0.2,
-            "depth": 0.0,
-            "offset": 0.0
-          }
-        }
-      ]
+        "bloodline:pale_wheat_fields",
+        "bloodline:sparse_wheat_plains",
+        "bloodline:bone_spike_forest",
+        "bloodline:withered_garden"
+      ],
+      "scale": 3
     }
   }
 }
