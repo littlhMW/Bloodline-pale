@@ -17,10 +17,33 @@
     }
   },
   "spawners": {
-    "monster": [], "creature": [], "ambient": [], "axolotls": [],
-    "underground_water_creature": [], "water_creature": [], "water_ambient": [], "misc": []
+    "monster": [],
+    "creature": [],
+    "ambient": [],
+    "axolotls": [],
+    "underground_water_creature": [],
+    "water_creature": [],
+    "water_ambient": [],
+    "misc": []
   },
   "spawn_costs": {},
-  "carvers": { "air": [], "liquid": [] },
-  "features": [[], [], [], [], [], [], [], [], [], [], []]
+  "carvers": {
+    "air": [],
+    "liquid": []
+  },
+  "features": [
+    [],
+    [],
+    [
+      "bloodline:pale_wheat_patch"
+    ],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+  ]
 }

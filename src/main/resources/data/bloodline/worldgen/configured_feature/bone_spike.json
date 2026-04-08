@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:block_column",
+  "config": {
+    "direction": "up",
+    "allowed_placement": {
+      "type": "minecraft:matching_blocks",
+      "blocks": ["bloodline:pale_grass_block", "minecraft:grass_block", "minecraft:dirt"]
+    },
+    "prioritize_tip": true,
+    "layers": [
+      { "height": 2, "provider": { "type": "minecraft:simple_state_provider", "state": { "Name": "minecraft:bone_block", "Properties": { "axis": "y" } } } },
+      { "height": 1, "provider": { "type": "minecraft:simple_state_provider", "state": { "Name": "minecraft:bone_block", "Properties": { "axis": "y" } } } }
+    ]
+  }
+}
