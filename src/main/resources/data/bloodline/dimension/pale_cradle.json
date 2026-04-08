@@ -7,110 +7,68 @@
       "type": "minecraft:multi_noise",
       "biomes": [
         {
-          "comment": "\u82cd\u767d\u9ea6\u539f\uff1a\u5927\u9762\u79ef\u57fa\u5e95",
+          "comment": "苍白麦原：大面积主体",
           "biome": "bloodline:pale_wheat_fields",
           "parameters": {
-            "temperature": 0,
-            "humidity": 0,
-            "continentalness": [
-              0.3,
-              1.0
-            ],
-            "erosion": [
-              -0.3,
-              0.3
-            ],
-            "weirdness": [
-              -0.2,
-              0.2
-            ],
-            "depth": 0,
-            "offset": 0
+            "temperature": 0.0,
+            "humidity": 0.0,
+            "continentalness": [0.27, 2.0],
+            "erosion": [-0.3, 0.3],
+            "weirdness": [-0.2, 0.2],
+            "depth": 0.0,
+            "offset": 0.0
           }
         },
         {
-          "comment": "\u7a00\u758f\u9ea6\u539f\uff1a\u5305\u56f4\u5728\u9ea6\u539f\u5468\u56f4",
+          "comment": "稀疏麦原：窄带过渡边缘",
           "biome": "bloodline:sparse_wheat_plains",
           "parameters": {
-            "temperature": 0,
-            "humidity": 0,
-            "continentalness": [
-              0.1,
-              0.3
-            ],
-            "erosion": [
-              -0.3,
-              0.3
-            ],
-            "weirdness": [
-              -0.2,
-              0.2
-            ],
-            "depth": 0,
-            "offset": 0
-          }
-        },
-        {
-          "comment": "\u9aa8\u523a\u68ee\u6797\uff1a\u6761\u72b6\u5206\u5e03",
-          "biome": "bloodline:bone_spike_forest",
-          "parameters": {
-            "temperature": 0,
-            "humidity": [
-              -0.5,
-              0.2
-            ],
-            "continentalness": [
-              -0.2,
-              0.5
-            ],
-            "erosion": 0,
-            "weirdness": [
-              0.5,
-              0.8
-            ],
-            "depth": 0,
-            "offset": 0
-          }
-        },
-        {
-          "comment": "\u8840\u6cca\uff1a\u5d4c\u5957\u5728\u9aa8\u523a\u68ee\u6797\u4e2d/\u5916\u56f4",
-          "biome": "bloodline:blood_poole",
-          "parameters": {
-            "temperature": 0,
-            "humidity": [
-              0.4,
-              1.0
-            ],
-            "continentalness": [
-              -0.2,
-              0.5
-            ],
-            "erosion": 0,
-            "weirdness": [
-              0.6,
-              0.75
-            ],
-            "depth": 0,
+            "temperature": 0.0,
+            "humidity": 0.0,
+            "continentalness": [0.25, 0.3],
+            "erosion": [-0.2, -0.1],
+            "weirdness": [-0.1, 0.1],
+            "depth": 0.0,
             "offset": 0.1
           }
         },
         {
-          "comment": "\u67af\u840e\u82b1\u56ed\uff1a\u7f55\u89c1\u5927\u5757\u533a\u57df",
+          "comment": "骨刺森林：条带状，侵蚀度控制走向",
+          "biome": "bloodline:bone_spike_forest",
+          "parameters": {
+            "temperature": 0.3,
+            "humidity": [-0.5, 1.0],
+            "continentalness": [-0.2, 1.0],
+            "erosion": 1.4,
+            "weirdness": [0.0, 2.0],
+            "depth": -0.4,
+            "offset": 0.7
+          }
+        },
+        {
+          "comment": "血泊：零星嵌套于森林内部",
+          "biome": "bloodline:blood_poole",
+          "parameters": {
+            "temperature": -1.2,
+            "humidity": [-1.0, 1.5],
+            "continentalness": [0.5, 1.0],
+            "erosion": [0.0, 1.0],
+            "weirdness": [0.0, 0.5],
+            "depth": 0.1,
+            "offset": 0.15
+          }
+        },
+        {
+          "comment": "枯萎花园：罕见大斑块",
           "biome": "bloodline:withered_garden",
           "parameters": {
-            "temperature": 0,
-            "humidity": 0,
-            "continentalness": [
-              -1.0,
-              -0.5
-            ],
-            "erosion": [
-              0.6,
-              1.0
-            ],
-            "weirdness": 0,
-            "depth": 0,
-            "offset": 0.2
+            "temperature": [0.0, 1.0],
+            "humidity": -0.5,
+            "continentalness": [0.25, 0.5],
+            "erosion": [0.0, 1.0],
+            "weirdness": [-1.0, 0.0],
+            "depth": -0.15,
+            "offset": 1.0
           }
         }
       ]

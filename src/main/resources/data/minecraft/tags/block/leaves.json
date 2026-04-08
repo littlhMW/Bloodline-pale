@@ -1,8 +1,6 @@
 {
   "replace": false,
   "values": [
-    "minecraft:birch_fence",
-    "minecraft:oak_leaves",
     "bloodline:pale_leaves"
   ]
 }

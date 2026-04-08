@@ -1,0 +1,38 @@
+{
+  "pale_cradle_music.bittersweet": {
+    "sounds": [
+      {
+        "name": "bloodline:music/bittersweet",
+        "stream": true
+      }
+    ],
+    "replace": true
+  },
+  "pale_cradle_music.tempting_secrets": {
+    "sounds": [
+      {
+        "name": "bloodline:music/tempting_secrets",
+        "stream": true
+      }
+    ],
+    "replace": true
+  },
+  "pale_cradle_music.heart_of_nowhere": {
+    "sounds": [
+      {
+        "name": "bloodline:music/heart_of_nowhere",
+        "stream": true
+      }
+    ],
+    "replace": true
+  },
+  "pale_cradle_music.awkward_meeting": {
+    "sounds": [
+      {
+        "name": "bloodline:music/awkward_meeting",
+        "stream": true
+      }
+    ],
+    "replace": true
+  }
+}
