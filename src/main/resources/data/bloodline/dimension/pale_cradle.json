@@ -4,14 +4,116 @@
     "type": "minecraft:noise",
     "settings": "bloodline:pale_cradle",
     "biome_source": {
-      "type": "minecraft:checkerboard",
+      "type": "minecraft:multi_noise",
       "biomes": [
-        "bloodline:pale_wheat_fields",
-        "bloodline:sparse_wheat_plains",
-        "bloodline:bone_spike_forest",
-        "bloodline:withered_garden"
-      ],
-      "scale": 3
+        {
+          "comment": "\u82cd\u767d\u9ea6\u539f\uff1a\u5927\u9762\u79ef\u57fa\u5e95",
+          "biome": "bloodline:pale_wheat_fields",
+          "parameters": {
+            "temperature": 0,
+            "humidity": 0,
+            "continentalness": [
+              0.3,
+              1.0
+            ],
+            "erosion": [
+              -0.3,
+              0.3
+            ],
+            "weirdness": [
+              -0.2,
+              0.2
+            ],
+            "depth": 0,
+            "offset": 0
+          }
+        },
+        {
+          "comment": "\u7a00\u758f\u9ea6\u539f\uff1a\u5305\u56f4\u5728\u9ea6\u539f\u5468\u56f4",
+          "biome": "bloodline:sparse_wheat_plains",
+          "parameters": {
+            "temperature": 0,
+            "humidity": 0,
+            "continentalness": [
+              0.1,
+              0.3
+            ],
+            "erosion": [
+              -0.3,
+              0.3
+            ],
+            "weirdness": [
+              -0.2,
+              0.2
+            ],
+            "depth": 0,
+            "offset": 0
+          }
+        },
+        {
+          "comment": "\u9aa8\u523a\u68ee\u6797\uff1a\u6761\u72b6\u5206\u5e03",
+          "biome": "bloodline:bone_spike_forest",
+          "parameters": {
+            "temperature": 0,
+            "humidity": [
+              -0.5,
+              0.2
+            ],
+            "continentalness": [
+              -0.2,
+              0.5
+            ],
+            "erosion": 0,
+            "weirdness": [
+              0.5,
+              0.8
+            ],
+            "depth": 0,
+            "offset": 0
+          }
+        },
+        {
+          "comment": "\u8840\u6cca\uff1a\u5d4c\u5957\u5728\u9aa8\u523a\u68ee\u6797\u4e2d/\u5916\u56f4",
+          "biome": "bloodline:blood_poole",
+          "parameters": {
+            "temperature": 0,
+            "humidity": [
+              0.4,
+              1.0
+            ],
+            "continentalness": [
+              -0.2,
+              0.5
+            ],
+            "erosion": 0,
+            "weirdness": [
+              0.6,
+              0.75
+            ],
+            "depth": 0,
+            "offset": 0.1
+          }
+        },
+        {
+          "comment": "\u67af\u840e\u82b1\u56ed\uff1a\u7f55\u89c1\u5927\u5757\u533a\u57df",
+          "biome": "bloodline:withered_garden",
+          "parameters": {
+            "temperature": 0,
+            "humidity": 0,
+            "continentalness": [
+              -1.0,
+              -0.5
+            ],
+            "erosion": [
+              0.6,
+              1.0
+            ],
+            "weirdness": 0,
+            "depth": 0,
+            "offset": 0.2
+          }
+        }
+      ]
     }
   }
 }
