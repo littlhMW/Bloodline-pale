@@ -43,7 +43,9 @@
     [],
     [],
     [],
-    [],
+    [
+      "bloodline:pale_wheat_patch"
+    ],
     []
   ]
 }
