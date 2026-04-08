@@ -5,7 +5,7 @@
   "ore_veins_enabled": false,
   "legacy_random_source": false,
   "default_block": {
-    "Name": "bloodline:pale_grass_block"
+    "Name": "bloodline:pale_bone_block"
   },
   "default_fluid": {
     "Name": "minecraft:air"
@@ -155,14 +155,14 @@
               "then_run": {
                 "type": "minecraft:block",
                 "result_state": {
-                  "Name": "minecraft:dirt"
+                  "Name": "bloodline:pale_ember"
                 }
               }
             },
             {
               "type": "minecraft:block",
               "result_state": {
-                "Name": "minecraft:stone"
+                "Name": "bloodline:pale_bone_block"
               }
             }
           ]
