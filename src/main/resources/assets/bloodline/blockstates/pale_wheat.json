@@ -1,1 +1,10 @@
-{"variants": {"age=0": {"model": "bloodline:block/pale_wheat_stage0"}, "age=1": {"model": "bloodline:block/pale_wheat_stage1"}, "age=2": {"model": "bloodline:block/pale_wheat_stage2"}, "age=3": {"model": "bloodline:block/pale_wheat_stage3"}, "age=4": {"model": "bloodline:block/pale_wheat_stage4"}, "age=5": {"model": "bloodline:block/pale_wheat_stage5"}, "age=6": {"model": "bloodline:block/pale_wheat_stage6"}, "age=7": {"model": "bloodline:block/pale_wheat_stage7"}}}
+{
+  "variants": {
+    "half=lower": {
+      "model": "bloodline:block/pale_wheat_bottom"
+    },
+    "half=upper": {
+      "model": "bloodline:block/pale_wheat_top"
+    }
+  }
+}
