@@ -30,4 +30,14 @@ public class BloodlineItems {
     // 纯白骨块物品
     public static final DeferredItem<BlockItem> PALE_BONE_BLOCK_ITEM =
             ITEMS.registerSimpleBlockItem(BloodlineBlocks.PALE_BONE_BLOCK);
+
+    // 骨树原木物品
+    public static final DeferredItem<BlockItem> BONE_LOG_ITEM =
+            ITEMS.registerSimpleBlockItem(BloodlineBlocks.BONE_LOG);
+
+
+    // 苍白树叶物品
+    public static final DeferredItem<BlockItem> PALE_LEAVES_ITEM =
+            ITEMS.registerSimpleBlockItem(BloodlineBlocks.PALE_LEAVES);
+
 }

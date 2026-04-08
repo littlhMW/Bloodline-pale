@@ -42,4 +42,18 @@ public class BloodlineBlocks {
                     .sound(SoundType.BONE_BLOCK)
                     .requiresCorrectToolForDrops()
     );
+
+    // 骨树原木
+    public static final DeferredBlock<BoneLogBlock> BONE_LOG = BLOCKS.register(
+            "bone_log",
+            BoneLogBlock::new
+    );
+
+
+    // 苍白树叶
+    public static final DeferredBlock<PaleLeavesBlock> PALE_LEAVES = BLOCKS.register(
+            "pale_leaves",
+            PaleLeavesBlock::new
+    );
+
 }
