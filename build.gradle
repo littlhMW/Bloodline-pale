@@ -123,39 +123,3 @@ idea {
         downloadJavadoc = true
     }
 }
-
-import groovy.json.JsonSlurper
-import groovy.json.JsonOutput
-
-task generateSoundsJson {
-    doLast {
-        def musicTracksFile = file('src/main/resources/assets/bloodline/music_tracks.json')
-        if (!musicTracksFile.exists()) {
-            println "Warning: music_tracks.json not found, skipping sounds.json generation"
-            return
-        }
-        
-        def slurper = new JsonSlurper()
-        def trackList = slurper.parse(musicTracksFile)
-        
-        def sounds = [:]
-        trackList.each { name ->
-            def eventId = "pale_cradle_music.${name}"
-            sounds[eventId] = [
-                sounds: [[name: "bloodline:music/${name}", stream: true]],
-                replace: true
-            ]
-        }
-        
-        def soundsFile = file('src/main/generated/resources/assets/bloodline/sounds.json')
-        soundsFile.parentFile.mkdirs()
-        soundsFile.text = JsonOutput.prettyPrint(JsonOutput.toJson(sounds))
-        println "Generated sounds.json with ${trackList.size()} tracks"
-    }
-}
-
-processResources.dependsOn generateSoundsJson
-
-sourceSets.main.resources {
-    srcDir 'src/main/generated/resources'
-}
