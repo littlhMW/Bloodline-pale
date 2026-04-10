@@ -1,4 +1,9 @@
 {
-  "block.bloodline.bone_log": "苍白原木",
-  "block.bloodline.pale_leaves": "苍白树叶"
+  "block.bloodline.bone_log": "\u82cd\u767d\u539f\u6728",
+  "block.bloodline.pale_leaves": "\u82cd\u767d\u6811\u53f6",
+  "block.bloodline.pale_grass_block": "\u82cd\u767d\u8349\u65b9\u5757",
+  "block.bloodline.pale_ember": "\u82cd\u767d\u4f59\u70ec",
+  "block.bloodline.pale_bone_block": "\u7eaf\u767d\u9aa8\u5757",
+  "block.bloodline.pale_wheat": "\u82cd\u767d\u5c0f\u9ea6",
+  "item.bloodline.pale_wheat_seeds": "\u82cd\u767d\u5c0f\u9ea6\u79cd\u5b50"
 }
