@@ -26,7 +26,11 @@ sourceSets.main.resources {
 }
 
 repositories {
-    // 如需额外仓库在此添加
+    maven {
+        name = 'GeckoLib'
+        url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+        content { includeGroup("software.bernie.geckolib") }
+    }
 }
 
 neoForge {
@@ -77,7 +81,7 @@ configurations {
 }
 
 dependencies {
-    // 示例依赖（可根据需要添加）
+    implementation "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:4.7.3"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

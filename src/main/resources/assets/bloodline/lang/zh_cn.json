@@ -1,9 +1,13 @@
 {
-  "block.bloodline.bone_log": "\u82cd\u767d\u539f\u6728",
-  "block.bloodline.pale_leaves": "\u82cd\u767d\u6811\u53f6",
-  "block.bloodline.pale_grass_block": "\u82cd\u767d\u8349\u65b9\u5757",
-  "block.bloodline.pale_ember": "\u82cd\u767d\u4f59\u70ec",
-  "block.bloodline.pale_bone_block": "\u7eaf\u767d\u9aa8\u5757",
-  "block.bloodline.pale_wheat": "\u82cd\u767d\u5c0f\u9ea6",
-  "item.bloodline.pale_wheat_seeds": "\u82cd\u767d\u5c0f\u9ea6\u79cd\u5b50"
+  "block.bloodline.bone_log": "苍白原木",
+  "block.bloodline.pale_leaves": "苍白树叶",
+  "block.bloodline.pale_grass_block": "苍白草方块",
+  "block.bloodline.pale_ember": "苍白余烬",
+  "block.bloodline.pale_bone_block": "纯白骨块",
+  "block.bloodline.pale_wheat": "苍白小麦",
+  "item.bloodline.pale_wheat_seeds": "苍白小麦种子",
+  "entity.bloodline.kuxuezhe": "枯血者",
+  "entity.bloodline.pale_minion": "苍白仆从",
+  "item.bloodline.kuxuezhe_spawn_egg": "枯血者刷怪蛋",
+  "item.bloodline.pale_minion_spawn_egg": "苍白仆从刷怪蛋"
 }

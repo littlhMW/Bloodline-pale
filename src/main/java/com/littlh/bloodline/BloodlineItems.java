@@ -1,7 +1,9 @@
 package com.littlh.bloodline;
 
+import com.littlh.bloodline.entity.BloodlineEntities;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -35,9 +37,16 @@ public class BloodlineItems {
     public static final DeferredItem<BlockItem> BONE_LOG_ITEM =
             ITEMS.registerSimpleBlockItem(BloodlineBlocks.BONE_LOG);
 
-
     // 苍白树叶物品
     public static final DeferredItem<BlockItem> PALE_LEAVES_ITEM =
             ITEMS.registerSimpleBlockItem(BloodlineBlocks.PALE_LEAVES);
 
+    // ===== 枯血者BOSS刷怪蛋 =====
+    public static final DeferredItem<SpawnEggItem> KUXUEZHE_SPAWN_EGG =
+            ITEMS.register("kuxuezhe_spawn_egg",
+                    () -> new SpawnEggItem(BloodlineEntities.KUXUEZHE.get(), 0x1a1a2e, 0xc41e3a, new Item.Properties()));
+
+    public static final DeferredItem<SpawnEggItem> PALE_MINION_SPAWN_EGG =
+            ITEMS.register("pale_minion_spawn_egg",
+                    () -> new SpawnEggItem(BloodlineEntities.PALE_MINION.get(), 0x8b8b8b, 0xc0c0c0, new Item.Properties()));
 }
