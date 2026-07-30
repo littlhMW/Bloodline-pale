@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "half=lower": { "model": "pale_lullaby:block/pale_wheat_bottom" },
+    "half=upper": { "model": "pale_lullaby:block/pale_wheat_top" }
+  }
+}

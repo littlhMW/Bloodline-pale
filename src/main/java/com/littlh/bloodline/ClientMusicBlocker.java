@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@EventBusSubscriber(modid = "bloodline", value = Dist.CLIENT)
+@EventBusSubscriber(modid = "pale_lullaby", value = Dist.CLIENT)
 public class ClientMusicBlocker {
 
     private static SoundEngine soundEngine;
@@ -27,7 +27,7 @@ public class ClientMusicBlocker {
         if (minecraft.player == null || minecraft.level == null) return;
 
         // 只在苍白摇篮维度执行
-        if (!minecraft.player.level().dimension().location().toString().equals("bloodline:pale_cradle")) {
+        if (!minecraft.player.level().dimension().location().toString().equals("pale_lullaby:pale_cradle")) {
             soundEngine = null;
             return;
         }
@@ -42,7 +42,7 @@ public class ClientMusicBlocker {
                 field.setAccessible(true);
                 soundEngine = (SoundEngine) field.get(minecraft.getSoundManager());
             } catch (Exception e) {
-                System.err.println("[Bloodline] Failed to get SoundEngine: " + e.getMessage());
+                System.err.println("[PaleLullaby] Failed to get SoundEngine: " + e.getMessage());
                 return;
             }
         }
@@ -62,7 +62,7 @@ public class ClientMusicBlocker {
                     if (value instanceof SoundInstance instance) {
                         if (instance.getSource() == SoundSource.MUSIC) {
                             String namespace = instance.getLocation().getNamespace();
-                            if (!namespace.equals("bloodline")) {
+                            if (!namespace.equals("pale_lullaby")) {
                                 toStop.add(instance);
                             }
                         }
@@ -74,7 +74,7 @@ public class ClientMusicBlocker {
                 }
             }
         } catch (Exception e) {
-            System.err.println("[Bloodline] Error blocking music: " + e.getMessage());
+            System.err.println("[PaleLullaby] Error blocking music: " + e.getMessage());
         }
     }
 }

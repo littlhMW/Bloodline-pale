@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "axis=x": { "model": "pale_lullaby:block/bone_log_horizontal", "x": 90, "y": 90 },
+    "axis=y": { "model": "pale_lullaby:block/bone_log" },
+    "axis=z": { "model": "pale_lullaby:block/bone_log_horizontal", "x": 90 }
+  }
+}

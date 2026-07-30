@@ -1,6 +1,0 @@
-{
-  "variants": {
-    "half=lower": { "model": "bloodline:block/pale_wheat_bottom" },
-    "half=upper": { "model": "bloodline:block/pale_wheat_top" }
-  }
-}

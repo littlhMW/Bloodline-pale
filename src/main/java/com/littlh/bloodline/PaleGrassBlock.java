@@ -24,7 +24,7 @@ public class PaleGrassBlock extends GrassBlock {
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (!canBeGrass(state, level, pos)) {
-            level.setBlockAndUpdate(pos, BloodlineBlocks.PALE_EMBER.get().defaultBlockState());
+            level.setBlockAndUpdate(pos, PaleLullabyBlocks.PALE_EMBER.get().defaultBlockState());
         } else {
             for (int i = 0; i < 4; ++i) {
                 BlockPos targetPos = pos.offset(
@@ -33,7 +33,7 @@ public class PaleGrassBlock extends GrassBlock {
                         random.nextInt(3) - 1
                 );
                 BlockState targetState = level.getBlockState(targetPos);
-                if (targetState.is(BloodlineBlocks.PALE_EMBER.get()) && canPropagate(state, level, targetPos)) {
+                if (targetState.is(PaleLullabyBlocks.PALE_EMBER.get()) && canPropagate(state, level, targetPos)) {
                     level.setBlockAndUpdate(targetPos, this.defaultBlockState());
                 }
             }

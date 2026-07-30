@@ -31,7 +31,7 @@ public class PaleMinionEntity extends Monster {
 
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10,
-                true, false, e -> e instanceof Mob mob && mob.getMobType() != this.getMobType()));
+                true, false, e -> e instanceof Mob mob && mob.getType() != this.getType()));
     }
 
     public static AttributeSupplier.Builder createAttributes() {

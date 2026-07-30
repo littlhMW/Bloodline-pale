@@ -15,7 +15,7 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import java.util.List;
 import java.util.Random;
 
-@EventBusSubscriber(modid = "bloodline", value = Dist.CLIENT)
+@EventBusSubscriber(modid = "pale_lullaby", value = Dist.CLIENT)
 public class ClientMusicManager {
 
     private static final Random RANDOM = new Random();
@@ -31,7 +31,7 @@ public class ClientMusicManager {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.player == null || minecraft.level == null) return;
         
-        if (!minecraft.player.level().dimension().location().toString().equals("bloodline:pale_cradle")) {
+        if (!minecraft.player.level().dimension().location().toString().equals("pale_lullaby:pale_cradle")) {
             stopMusic();
             return;
         }

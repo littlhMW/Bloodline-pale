@@ -1,6 +1,6 @@
 import os
 
-MOD_ID = "bloodline"
+MOD_ID = "pale_lullaby"
 PACKAGE = "com.littlh.bloodline"
 PACKAGE_PATH = PACKAGE.replace(".", "/")
 SRC_JAVA = f"src/main/java/{PACKAGE_PATH}"
