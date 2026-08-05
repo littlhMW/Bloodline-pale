@@ -34,6 +34,8 @@ public class PaleLullabyTabs {
 
                     // 灰质桶
                     output.accept(new ItemStack(com.littlh.palelullaby.fluid.ModFluids.GRAY_MATTER_BUCKET.get()));
+                    // 血液桶
+                    output.accept(new ItemStack(com.littlh.palelullaby.fluid.ModFluids.BLOOD_BUCKET.get()));
 
                     // 刷怪蛋
                     output.accept(new ItemStack(PaleLullabyItems.MULLAND_SPAWN_EGG.get()));

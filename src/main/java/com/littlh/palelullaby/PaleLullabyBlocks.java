@@ -76,4 +76,5 @@ public class PaleLullabyBlocks {
             "thorn_leaves",
             ThornLeavesBlock::new
     );
+
 }

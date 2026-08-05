@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -35,64 +36,54 @@ public class ThornTreeFeature extends Feature<NoneFeatureConfiguration> {
         }
 
         BlockState logY = log(Direction.Axis.Y);
-        // 高大主干 13~19 格
-        int trunkHeight = 13 + random.nextInt(7);
-        for (int i = 1; i <= trunkHeight; i++) {
-            BlockPos p = base.above(i);
-            if (level.isEmptyBlock(p)) {
-                setBlock(level, p, logY);
+        int trunkHeight = 10 + random.nextInt(5);
+        Direction shiftDir = Direction.Plane.HORIZONTAL.getRandomDirection(random);
+        BlockPos trunkPos = base;
+        for (int i = 0; i < trunkHeight; i++) {
+            if (!level.isEmptyBlock(trunkPos.above())) {
+                break;
+            }
+            trunkPos = trunkPos.above();
+            placeTrunkSection(level, trunkPos, logY);
+            if (random.nextInt(3) == 0) {
+                shiftDir = random.nextBoolean() ? shiftDir.getClockWise() : shiftDir.getCounterClockWise();
+                BlockPos next = trunkPos.relative(shiftDir);
+                if (level.isEmptyBlock(next) && level.isEmptyBlock(next.above())) {
+                    trunkPos = next;
+                    placeTrunkSection(level, trunkPos, logY);
+                }
             }
         }
 
-        // 多方向粗大分叉，横向枝干原木轴向正确
-        int branches = 8 + random.nextInt(4);
+        int branches = 5 + random.nextInt(3);
         for (int b = 0; b < branches; b++) {
-            int branchY = 4 + random.nextInt(Math.max(1, trunkHeight - 6));
+            int branchY = 3 + random.nextInt(Math.max(1, trunkHeight - 5));
             BlockPos pos = base.above(branchY);
             Direction dir = Direction.Plane.HORIZONTAL.getRandomDirection(random);
-            int len = 4 + random.nextInt(4);
+            int len = 2 + random.nextInt(2);
 
             for (int j = 0; j < len; j++) {
-                if (j % 2 == 1 && j < len - 1 && random.nextBoolean()) {
-                    pos = pos.above(1);
-                    if (!level.isEmptyBlock(pos)) {
-                        break;
-                    }
-                    setBlock(level, pos, logY);
-                } else {
-                    pos = pos.relative(dir);
-                    if (!level.isEmptyBlock(pos)) {
-                        break;
-                    }
-                    setBlock(level, pos, log(dir.getAxis()));
+                pos = pos.relative(dir);
+                if (!level.isEmptyBlock(pos)) {
+                    break;
                 }
-
+                setBlock(level, pos, log(dir.getAxis()));
                 if (j == len - 1) {
-                    placeLeafCluster(level, pos, random);
-                    if (random.nextBoolean()) {
-                        placeLeafCluster(level, pos.above(1), random);
-                    }
+                    placeFlatLeaves(level, pos, random);
                 }
-
-                // 枝条中段随机发出次级分叉
-                if (j >= 3 && random.nextInt(3) == 0) {
-                    Direction sub = random.nextBoolean() ? dir.getClockWise() : dir.getCounterClockWise();
-                    BlockPos q = pos;
-                    for (int k = 0; k < 3; k++) {
-                        q = k == 0 ? q.above(1) : q.relative(sub);
-                        if (!level.isEmptyBlock(q)) {
-                            break;
-                        }
-                        setBlock(level, q, k == 0 ? logY : log(sub.getAxis()));
+                if (random.nextBoolean()) {
+                    BlockPos side = pos.relative(random.nextBoolean() ? dir.getClockWise() : dir.getCounterClockWise());
+                    if (level.isEmptyBlock(side)) {
+                        setBlock(level, side, log(dir.getAxis()));
+                        placeFlatLeaves(level, side, random);
                     }
-                    placeLeafCluster(level, q, random);
                 }
             }
         }
 
-        // 顶部伞形成簇树冠
-        for (int i = 0; i < 4; i++) {
-            placeLeafCluster(level, base.above(trunkHeight - (i / 2)), random);
+        // 顶部扁平叶冠
+        for (int dy = 0; dy <= 1; dy++) {
+            placeFlatLeaves(level, base.above(trunkHeight + dy), random);
         }
         return true;
     }
@@ -101,21 +92,33 @@ public class ThornTreeFeature extends Feature<NoneFeatureConfiguration> {
         return PaleLullabyBlocks.THORN_LOG.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, axis);
     }
 
-    private void placeLeafCluster(WorldGenLevel level, BlockPos center, RandomSource random) {
-        BlockState leaves = PaleLullabyBlocks.THORN_LEAVES.get().defaultBlockState();
+    private void placeTrunkSection(WorldGenLevel level, BlockPos basePos, BlockState state) {
+        for (int dx = 0; dx <= 1; dx++) {
+            for (int dz = 0; dz <= 1; dz++) {
+                BlockPos pos = basePos.offset(dx, 0, dz);
+                if (level.isEmptyBlock(pos)) {
+                    setBlock(level, pos, state);
+                }
+            }
+        }
+    }
+
+    private void placeFlatLeaves(WorldGenLevel level, BlockPos center, RandomSource random) {
+        BlockState leaves = PaleLullabyBlocks.THORN_LEAVES.get().defaultBlockState()
+                .setValue(LeavesBlock.PERSISTENT, true);
         for (int dx = -2; dx <= 2; dx++) {
-            for (int dy = -1; dy <= 1; dy++) {
-                for (int dz = -2; dz <= 2; dz++) {
-                    int manhattan = Math.abs(dx) + Math.abs(dy) + Math.abs(dz);
-                    if (manhattan > 3) {
-                        continue;
-                    }
-                    if (manhattan > 1 && random.nextFloat() < 0.35F) {
-                        continue;
-                    }
-                    BlockPos p = center.offset(dx, dy, dz);
-                    if (level.isEmptyBlock(p)) {
-                        setBlock(level, p, leaves);
+            for (int dz = -2; dz <= 2; dz++) {
+                if (Math.abs(dx) + Math.abs(dz) > 3) {
+                    continue;
+                }
+                BlockPos pos = center.offset(dx, 0, dz);
+                if (level.isEmptyBlock(pos)) {
+                    setBlock(level, pos, leaves);
+                }
+                if (Math.abs(dx) + Math.abs(dz) <= 1) {
+                    BlockPos above = pos.above();
+                    if (level.isEmptyBlock(above) && random.nextFloat() < 0.25F) {
+                        setBlock(level, above, leaves);
                     }
                 }
             }
