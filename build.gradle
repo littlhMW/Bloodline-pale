@@ -23,6 +23,7 @@ sourceSets.main.resources {
     srcDir('src/generated/resources')
     exclude("**/*.bbmodel")
     exclude("src/generated/**/.cache")
+    exclude("**/PLACE_OGG_FILES_HERE.txt")
 }
 
 repositories {
@@ -81,7 +82,10 @@ configurations {
 }
 
 dependencies {
-    implementation "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:4.7.3"
+// MODMIND DEPENDENCIES START
+    implementation files('libs/modmind/lithostitched-1.7.13-neoforge-21.1.jar')
+    implementation files('libs/modmind/geckolib-neoforge-1.21.1-4.9.2.jar')
+// MODMIND DEPENDENCIES END
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
@@ -127,3 +131,34 @@ idea {
         downloadJavadoc = true
     }
 }
+
+tasks.register('copyReferenceAssets', Copy) {
+    from 'src/main/java/com/littlh/palelullaby/参考用'
+    include '苍白仆从.geo.json'
+    include '苍白仆从动画.json'
+    include 'pale_minion.png'
+    include 'bloodthirst_mod-1.2.0/assets/bloodthirst_mod_1783939410/textures/block/blood_fluid_overlay.png'
+    include 'bloodthirst_mod-1.2.0/assets/bloodthirst_mod_1783939410/textures/block/blood_fluid_still.png'
+    include 'bloodthirst_mod-1.2.0/assets/bloodthirst_mod_1783939410/textures/block/blood_fluid_flow.png'
+    into file('src/main/resources/assets/pale_lullaby')
+    rename { fileName ->
+        switch (fileName) {
+            case '苍白仆从.geo.json':
+                return 'geo/pale_minion.geo.json'
+            case '苍白仆从动画.json':
+                return 'animations/pale_minion.animation.json'
+            case 'pale_minion.png':
+                return 'textures/entity/pale_minion/pale_minion.png'
+            case 'blood_fluid_overlay.png':
+                return 'textures/block/blood_fluid_overlay.png'
+            case 'blood_fluid_still.png':
+                return 'textures/block/blood_fluid_still.png'
+            case 'blood_fluid_flow.png':
+                return 'textures/block/blood_fluid_flow.png'
+            default:
+                return fileName
+        }
+    }
+}
+
+processResources.dependsOn copyReferenceAssets

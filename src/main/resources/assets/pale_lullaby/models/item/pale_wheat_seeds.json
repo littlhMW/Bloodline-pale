@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "pale_lullaby:item/pale_wheat"
+    "layer0": "pale_lullaby:item/pale_wheat_seeds"
   }
 }

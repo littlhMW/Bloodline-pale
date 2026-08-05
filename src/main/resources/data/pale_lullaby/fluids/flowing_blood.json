@@ -1,0 +1,7 @@
+{
+  "type": "pale_lullaby:flowing_blood",
+  "properties": {
+    "still": "pale_lullaby:block/blood_fluid_still",
+    "flowing": "pale_lullaby:block/blood_fluid_flow"
+  }
+}

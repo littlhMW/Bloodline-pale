@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "dependencies": [
+    {
+      "projectId": "XaDC71GB",
+      "versionId": "qPASucBM",
+      "slug": "lithostitched",
+      "name": "Lithostitched",
+      "versionNumber": "1.7.13-neoforge-21.1",
+      "fileName": "lithostitched-1.7.13-neoforge-21.1.jar",
+      "relativePath": "libs/modmind/lithostitched-1.7.13-neoforge-21.1.jar",
+      "installedAt": "2026-08-04T12:35:12.230Z",
+      "environment": "server",
+      "source": "modrinth",
+      "sha512": "04409013edce65678d02489a7b830ba7d5e18e7c705243c8208f52661da62e7e337a09fe2797c85d7a00bc66cb50949b157b267afd216e7b900ddde9849dff32"
+    },
+    {
+      "projectId": "8BmcQJ2H",
+      "versionId": "tPkJmim6",
+      "slug": "geckolib",
+      "name": "Geckolib",
+      "versionNumber": "4.9.2",
+      "fileName": "geckolib-neoforge-1.21.1-4.9.2.jar",
+      "relativePath": "libs/modmind/geckolib-neoforge-1.21.1-4.9.2.jar",
+      "installedAt": "2026-08-04T10:44:01.039Z",
+      "environment": "both",
+      "source": "modrinth",
+      "sha512": "c91012b16cc40c8f48f69b78cb8e2e5c006486ae2431fbd289dfc01be7a4217294becea22d83a155d6b32b3969450df871352a3695e1452168b84f41355f7b9e"
+    }
+  ]
+}

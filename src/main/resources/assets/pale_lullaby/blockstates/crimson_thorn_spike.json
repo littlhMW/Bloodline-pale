@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=down":  { "model": "pale_lullaby:block/crimson_thorn_spike", "x": 90 },
+    "facing=up":    { "model": "pale_lullaby:block/crimson_thorn_spike", "x": 270 },
+    "facing=north": { "model": "pale_lullaby:block/crimson_thorn_spike" },
+    "facing=south": { "model": "pale_lullaby:block/crimson_thorn_spike", "y": 180 },
+    "facing=west":  { "model": "pale_lullaby:block/crimson_thorn_spike", "y": 270 },
+    "facing=east":  { "model": "pale_lullaby:block/crimson_thorn_spike", "y": 90 }
+  }
+}

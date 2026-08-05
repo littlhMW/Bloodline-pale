@@ -3,6 +3,9 @@
   "values": [
     "minecraft:birch_fence",
     "minecraft:oak_leaves",
-    "pale_lullaby:pale_leaves"
+    "pale_lullaby:pale_leaves",
+    "pale_lullaby:thorn_leaves",
+    "pale_lullaby:crimson_thorn",
+    "pale_lullaby:crimson_thorn_spike"
   ]
 }

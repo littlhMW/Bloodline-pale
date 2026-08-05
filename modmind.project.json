@@ -1,0 +1,12 @@
+{
+  "name": "苍白摇篮曲",
+  "path": "D:\\Docs\\MCMOD\\pale_lullaby",
+  "loader": "neoforge",
+  "minecraftVersion": "1.21.1",
+  "namespace": "pale_lullaby",
+  "createdAt": "2026-08-04T10:35:10.408Z",
+  "loaderVersion": "21.1.244",
+  "javaVersion": 21,
+  "projectVersion": "1.1.3",
+  "toolDataDirectory": ".modmind"
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "pale_lullaby:block/blood_fluid_still"
+  }
+}

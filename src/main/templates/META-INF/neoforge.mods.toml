@@ -42,7 +42,7 @@ displayName="${mod_name}" #mandatory
 #credits="" #optional
 
 # The authors of the mod, displayed in the mod UI (optional)
-#authors=""
+authors=["littlh"]
 
 # The description text for the mod (multi line!) (#mandatory)
 description='''
@@ -85,6 +85,14 @@ Example mod description.
     type="required"
     # This version range declares a minimum of the current minecraft version up to but not including the next major version
     versionRange="${minecraft_version_range}"
+    ordering="NONE"
+    side="BOTH"
+
+# Lithostitched dependency for data-driven overworld biome injection
+[[dependencies.${mod_id}]]
+    modId="lithostitched"
+    type="required"
+    versionRange="[1.7,)"
     ordering="NONE"
     side="BOTH"
 

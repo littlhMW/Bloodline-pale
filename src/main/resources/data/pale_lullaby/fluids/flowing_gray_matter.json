@@ -1,0 +1,7 @@
+{
+  "type": "pale_lullaby:flowing_gray_matter",
+  "properties": {
+    "still": "pale_lullaby:block/gray_matter_still",
+    "flowing": "pale_lullaby:block/gray_matter_flow"
+  }
+}
