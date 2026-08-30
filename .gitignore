@@ -52,3 +52,6 @@ sync-assets.ps1
 gecko_armor_bytecode.txt
 work-*.patch
 TEMPLATE_LICENSE.txt
+
+### Private docs ###
+docs/
