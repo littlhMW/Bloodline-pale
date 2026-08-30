@@ -1,0 +1,45 @@
+{
+  "feature": "pale_lullaby:widow_thorn_single",
+  "placement": [
+    {
+      "type": "minecraft:block_predicate_filter",
+      "predicate": {
+        "type": "minecraft:all_of",
+        "predicates": [
+          {
+            "type": "minecraft:replaceable"
+          },
+          {
+            "type": "minecraft:not",
+            "predicate": {
+              "type": "minecraft:matching_blocks",
+              "blocks": [
+                "minecraft:water",
+                "minecraft:lava",
+                "pale_lullaby:gray_matter",
+                "pale_lullaby:blood"
+              ]
+            }
+          },
+          {
+            "type": "minecraft:matching_blocks",
+            "offset": [
+              0,
+              -1,
+              0
+            ],
+            "blocks": [
+              "minecraft:coarse_dirt",
+              "minecraft:gravel",
+              "minecraft:dirt",
+              "minecraft:grass_block",
+              "minecraft:sand",
+              "pale_lullaby:withered_grass_block",
+              "pale_lullaby:withered_dirt"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

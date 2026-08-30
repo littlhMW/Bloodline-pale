@@ -1,3 +1,7 @@
+// NOTE: 程序化占位资源任务（generate*/copyReferenceAssets/deleteLegacyFiles）会在构建时覆盖或删除
+// src/main/resources 里的贴图/模型文件，导致手动替换的正式美术被还原成旧版。
+// 默认已禁用这些挂钩：src/main/resources 里的文件就是最终资源，手动覆盖后不会被还原。
+// 需要恢复旧行为时，把下方对应的 processResources.dependsOn 取消注释即可。
 plugins {
     id 'java-library'
     id 'maven-publish'
@@ -24,6 +28,22 @@ sourceSets.main.resources {
     exclude("**/*.bbmodel")
     exclude("src/generated/**/.cache")
     exclude("**/PLACE_OGG_FILES_HERE.txt")
+    exclude("data/pale_lullaby/lithostitched/worldgen_modifier/ore_silver_overworld.json")
+    exclude("assets/pale_lullaby/textures/block/soaked_mud_grass_side_overlay.png")
+    exclude("assets/pale_lullaby/textures/block/crimson_thorn_spike.png")
+    exclude("assets/pale_lullaby/textures/block/pale_grass_block_side_overlay.png")
+    exclude("assets/pale_lullaby/textures/block/pale_bone_block.png")
+    exclude("data/pale_lullaby/lithostitched/biome_injector/overworld_biomes.json")
+    exclude("data/pale_lullaby/worldgen/biome/pale_flower_fields.json")
+    exclude("data/pale_lullaby/worldgen/structure/ice_wall.json")
+    exclude("data/pale_lullaby/worldgen/structure_set/ice_wall.json")
+    exclude("data/pale_lullaby/loot_table/blocks/pale_bone_block.json")
+    exclude("data/pale_lullaby/loot_table/blocks/blind_cloud_flower.json")
+    exclude("assets/pale_lullaby/blockstates/pale_bone_block.json")
+    exclude("assets/pale_lullaby/models/block/pale_bone_block.json")
+    exclude("assets/pale_lullaby/models/item/pale_bone_block.json")
+    exclude("assets/pale_lullaby/textures/block/blind_cloud_flower.png")
+    exclude("assets/pale_lullaby/textures/block/white_matter.png")
 }
 
 repositories {
@@ -85,28 +105,12 @@ dependencies {
 // MODMIND DEPENDENCIES START
     implementation files('libs/modmind/lithostitched-1.7.13-neoforge-21.1.jar')
     implementation files('libs/modmind/geckolib-neoforge-1.21.1-4.9.2.jar')
+    compileOnly files('libs/modmind/irons_spellbooks-1.21.1-3.16.2.jar')
+    runtimeOnly files('libs/modmind/irons_lib-1.21.1-2.1.0.jar')
+    runtimeOnly files('libs/modmind/curios-neoforge-9.5.1+1.21.1.jar')
+    runtimeOnly files('libs/modmind/player-animation-lib-forge-2.0.4+1.21.1.jar')
 // MODMIND DEPENDENCIES END
 }
-
-var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
-    var replaceProperties = [
-            minecraft_version      : minecraft_version,
-            minecraft_version_range: minecraft_version_range,
-            neo_version            : neo_version,
-            loader_version_range   : loader_version_range,
-            mod_id                 : mod_id,
-            mod_name               : mod_name,
-            mod_license            : mod_license,
-            mod_version            : mod_version,
-    ]
-    inputs.properties replaceProperties
-    expand replaceProperties
-    from "src/main/templates"
-    into "build/generated/sources/modMetadata"
-}
-
-sourceSets.main.resources.srcDir generateModMetadata
-neoForge.ideSyncTask generateModMetadata
 
 publishing {
     publications {
@@ -161,4 +165,604 @@ tasks.register('copyReferenceAssets', Copy) {
     }
 }
 
-processResources.dependsOn copyReferenceAssets
+// 程序化生成 16x16 方块纹理（避免在仓库里提交二进制 PNG）
+tasks.register('generateBlockTextures') {
+    def texDir = file('src/main/resources/assets/pale_lullaby/textures/block')
+    outputs.dir texDir
+    outputs.upToDateWhen { false }
+    doLast {
+        texDir.mkdirs()
+        def newImg = { -> new java.awt.image.BufferedImage(16, 16, java.awt.image.BufferedImage.TYPE_INT_ARGB) }
+        def setPx = { java.awt.image.BufferedImage bi, int x, int y, def c ->
+            if (x < 0 || y < 0 || x > 15 || y > 15) return
+            int a = c.size() >= 4 ? (int) c[3] : 255
+            if (a == 0) {
+                bi.setRGB(x, y, 0)
+            } else {
+                bi.setRGB(x, y, (int) ((int) (0xFF000000 | (((int) c[0]) << 16) | (((int) c[1]) << 8) | ((int) c[2]))))
+            }
+        }
+        def getPx = { java.awt.image.BufferedImage bi, int x, int y ->
+            int rgb = bi.getRGB(x, y)
+            return [ (rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, (rgb >>> 24) & 0xFF ] as int[]
+        }
+        def writeTex = { String name, java.awt.image.BufferedImage bi ->
+            javax.imageio.ImageIO.write(bi, 'png', new File(texDir, name + '.png'))
+        }
+
+        // red_needle_log：深红棕竖向树皮
+        def log = newImg()
+        def rnd = new Random(11)
+        def colVariant = new double[16]
+        for (int x = 0; x < 16; x++) colVariant[x] = rnd.nextDouble()
+        for (int y = 0; y < 16; y++) {
+            for (int x = 0; x < 16; x++) {
+                double v = colVariant[x]
+                int[] c
+                if (v < 0.18) c = [51, 23, 8, 255]
+                else if (v < 0.62) c = [90, 45, 26, 255]
+                else if (v < 0.88) c = [107, 52, 30, 255]
+                else c = [131, 63, 32, 255]
+                if (y % 5 == 3) c = [51, 23, 8, 255]
+                else if (y % 5 == 4) c = [Math.min(255, c[0] + 14), Math.min(255, c[1] + 8), Math.min(255, c[2] + 5), 255]
+                if (x == 3 && y == 7) c = [40, 18, 8, 255]
+                if (x == 4 && y == 7) c = [30, 14, 6, 255]
+                if (x == 3 && y == 8) c = [58, 28, 15, 255]
+                if (x == 11 && y == 2) c = [36, 17, 8, 255]
+                setPx(log, x, y, c)
+            }
+        }
+        for (int y = 0; y < 16; y++) {
+            for (int x = 0; x < 16; x += 4) {
+                int[] c = getPx(log, x, y)
+                setPx(log, x, y, [Math.max(0, c[0] - 18), Math.max(0, c[1] - 10), Math.max(0, c[2] - 4), 255])
+            }
+        }
+        writeTex('red_needle_log', log)
+
+        // red_needle_log_top：同心年轮
+        def top = newImg()
+        rnd = new Random(22)
+        for (int y = 0; y < 16; y++) {
+            for (int x = 0; x < 16; x++) {
+                double dx = x - 7.5 + (rnd.nextDouble() - 0.5) * 0.6
+                double dy = y - 7.5 + (rnd.nextDouble() - 0.5) * 0.6
+                double d = Math.sqrt(dx * dx + dy * dy)
+                int[] c
+                if (d < 1.6) c = [52, 26, 13, 255]
+                else if (d < 2.8) c = [74, 37, 20, 255]
+                else if (d < 4.2) c = [94, 47, 27, 255]
+                else if (d < 5.4) c = [62, 31, 16, 255]
+                else if (d < 6.8) c = [94, 47, 27, 255]
+                else c = [62, 31, 16, 255]
+                double wob = Math.sin(d * 9.0 + 1.3)
+                if (Math.abs(d - 2.2) < 0.35 || Math.abs(d - 4.8) < 0.35 || Math.abs(d - 6.2) < 0.3) {
+                    c = [c[0] - 12, c[1] - 6, c[2] - 3, 255]
+                }
+                setPx(top, x, y, c)
+            }
+        }
+        writeTex('red_needle_log_top', top)
+
+        // red_needle_leaves：褐红针叶
+        def leaves = newImg()
+        rnd = new Random(33)
+        def holes = new HashSet<String>()
+        for (int i = 0; i < 6; i++) holes.add(((int) Math.floor(rnd.nextDouble() * 16)) + ',' + ((int) Math.floor(rnd.nextDouble() * 16)))
+        for (int y = 0; y < 16; y++) {
+            for (int x = 0; x < 16; x++) {
+                if (holes.contains(x + ',' + y)) {
+                    setPx(leaves, x, y, [0, 0, 0, 0])
+                    continue
+                }
+                double r = rnd.nextDouble()
+                int[] c
+                if (r < 0.28) c = [110, 45, 26, 255]
+                else if (r < 0.5) c = [84, 33, 20, 255]
+                else if (r < 0.72) c = [138, 59, 34, 255]
+                else if (r < 0.88) c = [66, 25, 14, 255]
+                else c = [158, 74, 42, 255]
+                setPx(leaves, x, y, c)
+            }
+        }
+        for (int y = 0; y < 16; y++) {
+            for (int x = 0; x < 16; x++) {
+                if (rnd.nextDouble() < 0.35) {
+                    int[] cur = getPx(leaves, x, y)
+                    int[] nb = getPx(leaves, Math.min(15, x + 1), y)
+                    if (nb[3] > 0) {
+                        setPx(leaves, x, y, [ (cur[0] + nb[0]) / 2, (cur[1] + nb[1]) / 2, (cur[2] + nb[2]) / 2, 255 ])
+                    }
+                }
+            }
+        }
+        writeTex('red_needle_leaves', leaves)
+
+        // blind_cloud_flower：白色云雾状花 + 绿茎
+        def flower = newImg()
+        rnd = new Random(44)
+        for (int y = 10; y < 16; y++) {
+            setPx(flower, 8, y, y >= 13 ? [52, 96, 48, 255] : [72, 124, 64, 255])
+        }
+        setPx(flower, 7, 10, [96, 150, 80, 255])
+        setPx(flower, 7, 11, [96, 150, 80, 255])
+        setPx(flower, 9, 13, [96, 150, 80, 255])
+        def puffs = [
+            [5.5, 4.0, 2.2], [10.5, 3.6, 2.4], [8.0, 2.4, 2.0], [4.0, 7.0, 1.7],
+            [12.0, 6.6, 1.7], [8.0, 7.2, 2.6], [6.0, 9.0, 1.6], [10.2, 9.0, 1.6]
+        ]
+        for (def p : puffs) {
+            for (int y = 0; y < 16; y++) {
+                for (int x = 0; x < 16; x++) {
+                    double d = Math.sqrt((x - p[0]) * (x - p[0]) + (y - p[1]) * (y - p[1]))
+                    double rr = p[2] + (rnd.nextDouble() - 0.5) * 0.5
+                    if (d <= rr) {
+                        double edge = rr - d
+                        int[] c = [255, 255, 255, 255]
+                        if (edge < 0.55) c = [204, 214, 206, 255]
+                        else if (edge < 1.1) c = [226, 232, 226, 255]
+                        if (x - p[0] < 0 && y - p[1] > 0 && edge > 0.4) c = [226, 232, 226, 255]
+                        int[] cur = getPx(flower, x, y)
+                        if (cur[3] == 0 || rnd.nextDouble() < 0.5) setPx(flower, x, y, c)
+                    }
+                }
+            }
+        }
+        setPx(flower, 8, 4, [255, 246, 200, 255])
+        setPx(flower, 7, 4, [255, 246, 200, 255])
+        writeTex('blind_floss_flower', flower)
+
+        // soaked_mud：被血浸湿的暗红淤泥
+        def mud = newImg()
+        def mudRnd = new Random(55)
+        for (int y = 0; y < 16; y++) {
+            for (int x = 0; x < 16; x++) {
+                double r = mudRnd.nextDouble()
+                int[] c
+                if (r < 0.2) c = [58, 20, 18, 255]
+                else if (r < 0.55) c = [84, 30, 26, 255]
+                else if (r < 0.82) c = [98, 36, 30, 255]
+                else c = [116, 44, 36, 255]
+                setPx(mud, x, y, c)
+            }
+        }
+        for (int i = 0; i < 12; i++) {
+            setPx(mud, mudRnd.nextInt(16), mudRnd.nextInt(16), [46, 10, 22, 255])
+        }
+        writeTex('soaked_mud', mud)
+
+        // soaked_mud_grass_top：暗红草皮顶部
+        def mudTop = newImg()
+        def topRnd = new Random(66)
+        for (int y = 0; y < 16; y++) {
+            for (int x = 0; x < 16; x++) {
+                double r = topRnd.nextDouble()
+                int[] c
+                if (r < 0.22) c = [60, 10, 20, 255]
+                else if (r < 0.55) c = [74, 14, 26, 255]
+                else if (r < 0.82) c = [88, 20, 32, 255]
+                else c = [100, 26, 38, 255]
+                setPx(mudTop, x, y, c)
+            }
+        }
+        writeTex('soaked_mud_grass_top', mudTop)
+
+        // soaked_mud_grass_side：下半淤泥 + 顶部暗红草皮
+        def mudSide = newImg()
+        def sideRnd = new Random(77)
+        for (int y = 0; y < 16; y++) {
+            for (int x = 0; x < 16; x++) {
+                double r = sideRnd.nextDouble()
+                int[] c
+                if (y < 4) {
+                    if (r < 0.25) c = [60, 10, 20, 255]
+                    else if (r < 0.6) c = [74, 14, 26, 255]
+                    else c = [90, 22, 34, 255]
+                } else {
+                    if (r < 0.2) c = [58, 20, 18, 255]
+                    else if (r < 0.6) c = [84, 30, 26, 255]
+                    else c = [100, 38, 32, 255]
+                }
+                setPx(mudSide, x, y, c)
+            }
+        }
+        writeTex('soaked_mud_grass_side', mudSide)
+
+
+    }
+}
+
+// Delete legacy files: ModMind cannot delete files directly, so we use a task to remove them at build time.
+tasks.register('deleteLegacyFiles') {
+    outputs.upToDateWhen { false }
+    doLast {
+        delete(
+            'src/main/resources/data/pale_lullaby/worldgen/biome/pale_flower_fields.json',
+            'src/main/resources/data/pale_lullaby/loot_table/blocks/pale_bone_block.json',
+            'src/main/resources/data/pale_lullaby/loot_table/blocks/blind_cloud_flower.json',
+            'src/main/resources/assets/pale_lullaby/blockstates/pale_bone_block.json',
+            'src/main/resources/assets/pale_lullaby/models/block/pale_bone_block.json',
+            'src/main/resources/assets/pale_lullaby/models/item/pale_bone_block.json',
+            'src/main/resources/data/pale_lullaby/lithostitched/biome_injector/overworld_biomes.json',
+            'src/main/resources/data/pale_lullaby/worldgen/structure/ice_wall.json',
+            'src/main/resources/data/pale_lullaby/worldgen/structure_set/ice_wall.json',
+            'src/main/resources/data/pale_lullaby/tags/worldgen/biome/has_structure/ice_wall.json'
+        )
+    }
+}
+
+// [disabled] processResources.dependsOn copyReferenceAssets
+// [disabled] processResources.dependsOn generateBlockTextures
+// [disabled] processResources.dependsOn deleteLegacyFiles
+
+// 程序化生成实体贴图：枯血鬼从美术资产提取，血族/血猎/堕落血猎绘制玩家皮肤
+tasks.register('generateEntityTextures') {
+    def texDir = file('src/main/resources/assets/pale_lullaby/textures/entity')
+    outputs.dir texDir
+    doLast {
+        texDir.mkdirs()
+
+        // ---- 枯血鬼：从美术资产 bbmodel 提取 PNG ----
+        def bbFile = new File('D:/Docs/MCMOD/美术资产/枯血鬼MOB.bbmodel')
+        if (bbFile.exists()) {
+            def bbJson = new groovy.json.JsonSlurper().parseText(bbFile.getText('UTF-8'))
+            def src = bbJson.textures[0].source
+            def b64 = src.substring(src.indexOf(',') + 1)
+            def pngBytes = b64.decodeBase64()
+            def ghoulDir = new File(texDir, 'dried_blood_ghost')
+            ghoulDir.mkdirs()
+            new File(ghoulDir, 'dried_blood_ghost.png').withOutputStream { it.write(pngBytes) }
+        }
+
+        // ---- 玩家模型皮肤绘制 ----
+        def newSkin = { -> new java.awt.image.BufferedImage(64, 64, java.awt.image.BufferedImage.TYPE_INT_ARGB) }
+        def fill = { java.awt.image.BufferedImage bi, int x, int y, int w, int h, def c ->
+            for (int yy = y; yy < y + h; yy++)
+                for (int xx = x; xx < x + w; xx++)
+                    bi.setRGB(xx, yy, (int) (0xFF000000 | (c[0] << 16) | (c[1] << 8) | c[2]))
+        }
+        def px = { java.awt.image.BufferedImage bi, int x, int y, def c ->
+            if (x >= 0 && y >= 0 && x < 64 && y < 64)
+                bi.setRGB(x, y, (int) (0xFF000000 | (c[0] << 16) | (c[1] << 8) | c[2]))
+        }
+        def face = { java.awt.image.BufferedImage bi, def eyeC ->
+            px(bi, 9, 11, eyeC); px(bi, 10, 11, eyeC)
+            px(bi, 13, 11, eyeC); px(bi, 14, 11, eyeC)
+            px(bi, 11, 13, eyeC); px(bi, 12, 13, eyeC)
+        }
+        def drawSkin = { String name, def skinC, def shirtC, def pantsC, def sleeveC, def hatC, def eyeC ->
+            def bi = newSkin()
+            // 头
+            fill(bi, 8, 0, 8, 8, skinC)
+            fill(bi, 16, 0, 8, 8, skinC)
+            fill(bi, 0, 8, 8, 8, skinC)
+            fill(bi, 8, 8, 8, 8, skinC)
+            fill(bi, 16, 8, 8, 8, skinC)
+            fill(bi, 24, 8, 8, 8, skinC)
+            // 身体
+            fill(bi, 20, 16, 8, 12, shirtC)
+            fill(bi, 16, 16, 4, 12, shirtC)
+            fill(bi, 28, 16, 4, 12, shirtC)
+            fill(bi, 32, 16, 8, 12, shirtC)
+            fill(bi, 20, 12, 8, 4, shirtC)
+            fill(bi, 28, 12, 8, 4, shirtC)
+            // 右臂（袖+手）
+            fill(bi, 40, 16, 4, 4, sleeveC)
+            fill(bi, 44, 16, 4, 4, sleeveC)
+            fill(bi, 44, 20, 4, 12, sleeveC)
+            fill(bi, 48, 20, 4, 12, sleeveC)
+            fill(bi, 52, 20, 4, 12, sleeveC)
+            fill(bi, 56, 20, 4, 12, sleeveC)
+            fill(bi, 44, 28, 4, 4, skinC)
+            fill(bi, 48, 28, 4, 4, skinC)
+            fill(bi, 52, 28, 4, 4, skinC)
+            fill(bi, 56, 28, 4, 4, skinC)
+            // 右腿
+            fill(bi, 4, 16, 4, 4, pantsC)
+            fill(bi, 8, 16, 4, 4, pantsC)
+            fill(bi, 8, 20, 4, 12, pantsC)
+            fill(bi, 12, 20, 4, 12, pantsC)
+            fill(bi, 0, 20, 4, 12, pantsC)
+            fill(bi, 4, 20, 4, 12, pantsC)
+            fill(bi, 8, 28, 4, 4, pantsC)
+            fill(bi, 12, 28, 4, 4, pantsC)
+            fill(bi, 0, 28, 4, 4, pantsC)
+            fill(bi, 4, 28, 4, 4, pantsC)
+            // 左臂
+            fill(bi, 40, 48, 4, 4, sleeveC)
+            fill(bi, 44, 48, 4, 4, sleeveC)
+            fill(bi, 44, 52, 4, 12, sleeveC)
+            fill(bi, 48, 52, 4, 12, sleeveC)
+            fill(bi, 52, 52, 4, 12, sleeveC)
+            fill(bi, 56, 52, 4, 12, sleeveC)
+            fill(bi, 44, 60, 4, 4, skinC)
+            fill(bi, 48, 60, 4, 4, skinC)
+            fill(bi, 52, 60, 4, 4, skinC)
+            fill(bi, 56, 60, 4, 4, skinC)
+            // 左腿
+            fill(bi, 20, 32, 4, 4, pantsC)
+            fill(bi, 24, 32, 4, 4, pantsC)
+            fill(bi, 24, 36, 4, 12, pantsC)
+            fill(bi, 28, 36, 4, 12, pantsC)
+            fill(bi, 16, 36, 4, 12, pantsC)
+            fill(bi, 32, 36, 8, 12, pantsC)
+            fill(bi, 24, 44, 4, 4, pantsC)
+            fill(bi, 28, 44, 4, 4, pantsC)
+            fill(bi, 16, 44, 4, 4, pantsC)
+            fill(bi, 32, 44, 8, 4, pantsC)
+            // 脸
+            face(bi, eyeC)
+            // 帽层（第二层）
+            fill(bi, 40, 0, 8, 8, hatC)
+            fill(bi, 32, 8, 8, 8, hatC)
+            fill(bi, 40, 8, 8, 8, hatC)
+            fill(bi, 48, 8, 8, 8, hatC)
+            fill(bi, 56, 8, 8, 8, hatC)
+            def out = new File(texDir, name)
+            out.getParentFile().mkdirs()
+            javax.imageio.ImageIO.write(bi, 'png', out)
+        }
+        drawSkin('vampire/vampire.png', [226, 219, 213], [40, 9, 19], [25, 25, 31], [40, 9, 19], [12, 6, 9], [0, 0, 0, 255])
+        drawSkin('blood_hunter/blood_hunter.png', [223, 189, 157], [93, 63, 37], [65, 45, 29], [111, 79, 49], [71, 47, 27], [0, 0, 0, 255])
+        drawSkin('fallen_blood_hunter/fallen_blood_hunter.png', [179, 169, 159], [47, 47, 53], [37, 37, 43], [47, 47, 53], [27, 25, 27], [20, 8, 8, 255])
+    }
+}
+
+// 程序化生成银系 16x16 贴图
+tasks.register('generateSilverTextures') {
+    def itemDir = file('src/main/resources/assets/pale_lullaby/textures/item')
+    def blockDir = file('src/main/resources/assets/pale_lullaby/textures/block')
+    outputs.dir itemDir
+    outputs.dir blockDir
+    doLast {
+        itemDir.mkdirs()
+        blockDir.mkdirs()
+        def newImg = { -> new java.awt.image.BufferedImage(16, 16, java.awt.image.BufferedImage.TYPE_INT_ARGB) }
+        def setPx = { java.awt.image.BufferedImage bi, int x, int y, def c ->
+            if (x < 0 || y < 0 || x > 15 || y > 15) return
+            bi.setRGB(x, y, (int) (0xFF000000 | (c[0] << 16) | (c[1] << 8) | c[2]))
+        }
+        def write = { File dir, String name, java.awt.image.BufferedImage bi ->
+            javax.imageio.ImageIO.write(bi, 'png', new File(dir, name + '.png'))
+        }
+        def rnd = new Random(77)
+
+        // silver_ingot：银锭
+        def ingot = newImg()
+        for (int y = 0; y < 16; y++) {
+            int lo, hi
+            if (y == 2 || y == 13) { lo = 5; hi = 10 }
+            else if (y == 3 || y == 12) { lo = 4; hi = 11 }
+            else if (y >= 4 && y <= 11) { lo = 3; hi = 12 }
+            else continue
+            for (int x = lo; x <= hi; x++) {
+                def c = [203, 210, 218, 255]
+                if (x == lo || x == hi || y == 2 || y == 13) c = [150, 158, 166, 255]
+                else if (x == lo + 1 && y == lo + 1) c = [238, 242, 246, 255]
+                else if (rnd.nextDouble() < 0.12) c = [215, 222, 229, 255]
+                setPx(ingot, x, y, c)
+            }
+        }
+        write(itemDir, 'silver_ingot', ingot)
+
+        // silver_ore：石头底 + 银色矿点
+        def ore = newImg()
+        rnd = new Random(88)
+        for (int y = 0; y < 16; y++) {
+            for (int x = 0; x < 16; x++) {
+                double r = rnd.nextDouble()
+                int v = 96 + (int) (r * 42)
+                def c = [v, v + 2, v + 6, 255]
+                if (r < 0.1) c = [v - 14, v - 12, v - 8, 255]
+                setPx(ore, x, y, c)
+            }
+        }
+        def spots = [[2, 3], [2, 4], [3, 3], [3, 4], [9, 6], [9, 7], [10, 6], [10, 7], [5, 11], [6, 11], [5, 12], [6, 12], [13, 12], [14, 12], [13, 13], [14, 13]]
+        for (int i = 0; i < spots.size(); i += 4) {
+            for (int k = 0; k < 4; k++) {
+                def p = spots[i + k]
+                int b = 200 + rnd.nextInt(35)
+                setPx(ore, p[0], p[1], [b, b, b + 4, 255])
+            }
+        }
+        write(blockDir, 'silver_ore', ore)
+
+        // silver_block：亮银方块
+        def block = newImg()
+        rnd = new Random(99)
+        for (int y = 0; y < 16; y++) {
+            for (int x = 0; x < 16; x++) {
+                int[] c
+                if (x == 0 || y == 0 || x == 15 || y == 15) c = [168, 176, 184, 255]
+                else {
+                    int base = 208 + (int) (rnd.nextDouble() * 24)
+                    c = [base, base + 4, base + 8, 255]
+                    if (x < 6 && y < 6) c = [c[0] + 14, c[1] + 14, c[2] + 14, 255]
+                    if (x > 10 && y > 10) c = [c[0] - 18, c[1] - 18, c[2] - 18, 255]
+                }
+                setPx(block, x, y, c)
+            }
+        }
+        write(blockDir, 'silver_block', block)
+    }
+}
+
+// [disabled] processResources.dependsOn generateEntityTextures
+// [disabled] processResources.dependsOn generateSilverTextures
+
+// 程序化生成断剑方块纹理与物品图标（按 GeckoLib box-UV 布局绘制 128x128）：
+tasks.register('generateBrokenSwordTextures') {
+    def itemDir = file('src/main/resources/assets/pale_lullaby/textures/item')
+    def blockDir = file('src/main/resources/assets/pale_lullaby/textures/block')
+    outputs.dir itemDir
+    outputs.dir blockDir
+    doLast {
+        itemDir.mkdirs()
+        blockDir.mkdirs()
+        def newImg = { int w, int h -> new java.awt.image.BufferedImage(w, h, java.awt.image.BufferedImage.TYPE_INT_ARGB) }
+        def setPx = { java.awt.image.BufferedImage bi, int x, int y, def c ->
+            if (x < 0 || y < 0 || x >= bi.getWidth() || y >= bi.getHeight()) return
+            bi.setRGB(x, y, (int) (0xFF000000 | (c[0] << 16) | (c[1] << 8) | c[2]))
+        }
+        def fillRect = { java.awt.image.BufferedImage bi, int x, int y, int w, int h, def c ->
+            for (int yy = y; yy < y + h; yy++)
+                for (int xx = x; xx < x + w; xx++)
+                    setPx(bi, xx, yy, c)
+        }
+        def write = { File dir, String name, java.awt.image.BufferedImage bi ->
+            javax.imageio.ImageIO.write(bi, 'png', new File(dir, name + '.png'))
+        }
+        def shade = { def c, int d -> [Math.max(0, c[0] - d), Math.max(0, c[1] - d), Math.max(0, c[2] - d), 255] }
+        def brighten = { def c, int d -> [Math.min(255, c[0] + d), Math.min(255, c[1] + d), Math.min(255, c[2] + d), 255] }
+
+        // GeckoLib 的 box UV 布局（与 Minecraft 方块模型不同，东西面互换）：
+        // UP:(u+z,v) size(x,z)  DOWN:(u+z+x,v+z) size(x,z)
+        // NORTH:(u+z,v+z) size(x,y)  SOUTH:(u+z+x+z,v+z) size(x,y)
+        // WEST:(u+z+x,v+z) size(z,y)  EAST:(u,v+z) size(z,y)
+        def paintCube = { java.awt.image.BufferedImage bi, int u, int v, int sx, int sy, int sz, def baseC, int seed ->
+            def rnd = new Random(seed)
+            def side = { int x, int y, int w, int h ->
+                for (int yy = y; yy < y + h; yy++)
+                    for (int xx = x; xx < x + w; xx++) {
+                        def c = baseC
+                        double r = rnd.nextDouble()
+                        if (r < 0.08) c = shade(baseC, 30)
+                        else if (r < 0.16) c = brighten(baseC, 18)
+                        setPx(bi, xx, yy, c)
+                    }
+            }
+            side(u + sz, v, sx, sz)            // UP
+            side(u + sz + sx, v + sz, sx, sz)  // DOWN
+            side(u + sz, v + sz, sx, sy)       // NORTH
+            side(u + sz + sx + sz, v + sz, sx, sy) // SOUTH
+            side(u + sz + sx, v + sz, sz, sy)  // WEST
+            side(u, v + sz, sz, sy)            // EAST
+        }
+
+        def tex = newImg(128, 128)
+        // 石座基座（灰石）
+        paintCube(tex, 20, 0, 16, 3, 16, [138, 138, 144, 255], 11)
+        // 基座上沿（浅灰石）
+        paintCube(tex, 0, 36, 12, 3, 12, [156, 156, 162, 255], 12)
+        // 四角小花（茎绿 + 花头红）
+        paintCube(tex, 96, 53, 3, 1, 3, [96, 142, 64, 255], 13)
+        paintCube(tex, 110, 53, 3, 1, 3, [96, 142, 64, 255], 14)
+        paintCube(tex, 56, 53, 2, 3, 2, [86, 132, 58, 255], 15)
+        paintCube(tex, 0, 53, 3, 2, 3, [198, 54, 64, 255], 16)
+        paintCube(tex, 66, 53, 2, 3, 2, [86, 132, 58, 255], 17)
+        paintCube(tex, 14, 53, 3, 2, 3, [198, 54, 64, 255], 18)
+        paintCube(tex, 76, 53, 2, 3, 2, [86, 132, 58, 255], 19)
+        paintCube(tex, 28, 53, 3, 2, 3, [198, 54, 64, 255], 20)
+        paintCube(tex, 86, 53, 2, 3, 2, [86, 132, 58, 255], 21)
+        paintCube(tex, 42, 53, 3, 2, 3, [198, 54, 64, 255], 22)
+        // 小绿叶
+        paintCube(tex, 0, 60, 2, 2, 2, [76, 122, 54, 255], 23)
+        paintCube(tex, 10, 60, 2, 2, 2, [76, 122, 54, 255], 24)
+        // 剑柄握把（深褐皮革）
+        paintCube(tex, 96, 36, 3, 3, 3, [88, 66, 48, 255], 25)
+        // 金色护手
+        paintCube(tex, 62, 36, 12, 2, 4, [214, 180, 88, 255], 26)
+        // 剑身（银灰钢）
+        paintCube(tex, 0, 0, 3, 31, 3, [152, 158, 166, 255], 27)
+        // 剑身中央亮脊
+        paintCube(tex, 14, 0, 1, 31, 1, [222, 230, 240, 255], 28)
+        // 断裂尖头（深灰锈铁）
+        paintCube(tex, 50, 36, 2, 5, 3, [106, 110, 118, 255], 29)
+        paintCube(tex, 110, 36, 1, 3, 3, [106, 110, 118, 255], 30)
+        write(blockDir, 'broken_sword', tex)
+
+        // 断剑物品图标（16x16）：斜插断剑
+        def icon = newImg(16, 16)
+        for (int y = 2; y < 12; y++) {
+            int lo = 5 + (y < 6 ? (y - 2) : 0)
+            for (int x = lo; x <= 8; x++) {
+                def c = [170, 178, 188, 255]
+                if (x == lo && y > 2) c = [226, 234, 244, 255]
+                setPx(icon, x, y, c)
+            }
+        }
+        // 断裂尖
+        setPx(icon, 8, 2, [142, 148, 156, 255])
+        setPx(icon, 9, 2, [142, 148, 156, 255])
+        setPx(icon, 9, 3, [152, 158, 166, 255])
+        // 护手
+        fillRect(icon, 3, 11, 5, 1, [216, 182, 94, 255])
+        // 握把
+        fillRect(icon, 4, 12, 3, 2, [94, 72, 52, 255])
+        // 柄头
+        fillRect(icon, 4, 14, 3, 1, [72, 56, 42, 255])
+        write(itemDir, 'broken_sword', icon)
+
+        // 少女的血月物品图标：血红圆月
+        def moon = newImg(16, 16)
+        def rnd = new Random(31)
+        for (int y = 0; y < 16; y++) {
+            for (int x = 0; x < 16; x++) {
+                double dx = x - 7.5, dy = y - 7.5
+                double dist = Math.sqrt(dx * dx + dy * dy)
+                if (dist > 6.6) continue
+                def c = [196 + rnd.nextInt(34), 20, 28, 255]
+                if (dist > 5.4) c = shade(c, 46)
+                if (rnd.nextDouble() < 0.10) c = brighten(c, 24)
+                setPx(moon, x, y, c)
+            }
+        }
+        write(itemDir, 'maidens_blood_moon', moon)
+    }
+}
+
+// [disabled] processResources.dependsOn generateBrokenSwordTextures
+
+// 程序化生成盔甲层纹理（每套 2 层 64x32）
+tasks.register('generateArmorTextures') {
+    def armorDir = file('src/main/resources/assets/pale_lullaby/textures/models/armor')
+    outputs.dir armorDir
+    doLast {
+        armorDir.mkdirs()
+        def newImg = { -> new java.awt.image.BufferedImage(64, 32, java.awt.image.BufferedImage.TYPE_INT_ARGB) }
+        def setPx = { java.awt.image.BufferedImage bi, int x, int y, def c ->
+            if (x < 0 || y < 0 || x > 63 || y > 31) return
+            bi.setRGB(x, y, (int) (0xFF000000 | (c[0] << 16) | (c[1] << 8) | c[2]))
+        }
+        def darken = { def c, int d -> [Math.max(0, c[0] - d), Math.max(0, c[1] - d), Math.max(0, c[2] - d), 255] }
+        def lighten = { def c, int d -> [Math.min(255, c[0] + d), Math.min(255, c[1] + d), Math.min(255, c[2] + d), 255] }
+        def drawArmor = { String name, def base ->
+            def rnd = new Random(name.hashCode())
+            def l1 = newImg()
+            def l2 = newImg()
+            for (int y = 0; y < 32; y++) {
+                for (int x = 0; x < 64; x++) {
+                    def c = base
+                    double r = rnd.nextDouble()
+                    if (r < 0.12) c = darken(base, 22)
+                    else if (r < 0.2) c = lighten(base, 20)
+                    // 边缘
+                    if (x == 0 || y == 0 || x == 63 || y == 31) c = darken(base, 45)
+                    // 上半部高光（胸甲区域）
+                    if (y < 8 && x > 16 && x < 48 && r > 0.2) c = lighten(base, 12)
+                    setPx(l1, x, y, c)
+                    // 第二层更暗一点
+                    def c2 = darken(base, 18)
+                    if (r < 0.12) c2 = darken(base, 38)
+                    else if (r < 0.2) c2 = base
+                    if (x == 0 || y == 0 || x == 63 || y == 31) c2 = darken(base, 55)
+                    setPx(l2, x, y, c2)
+                }
+            }
+            javax.imageio.ImageIO.write(l1, 'png', new File(armorDir, name + '_layer_1.png'))
+            javax.imageio.ImageIO.write(l2, 'png', new File(armorDir, name + '_layer_2.png'))
+        }
+        drawArmor('hunter_leather', [122, 86, 50])
+        drawArmor('hunter_cloth', [118, 118, 124])
+        drawArmor('hunter_novice', [142, 148, 155])
+        drawArmor('hunter_adept', [165, 175, 188])
+        drawArmor('hunter_exalted', [212, 180, 92])
+        drawArmor('hunter_exiled', [150, 158, 170])
+        drawArmor('hunter_fallen', [96, 98, 104])
+        drawArmor('inquisitor', [88, 32, 40])
+        drawArmor('herbalist', [84, 110, 74])
+        drawArmor('silver', [196, 205, 216])
+    }
+}
+
+// [disabled] processResources.dependsOn generateArmorTextures

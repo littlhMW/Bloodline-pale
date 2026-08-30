@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "pale_lullaby:block/ghost_orchid"
+  }
+}

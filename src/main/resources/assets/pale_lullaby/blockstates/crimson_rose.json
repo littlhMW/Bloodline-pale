@@ -1,0 +1,54 @@
+{
+  "variants": {
+    "facing=up,has_nectar=false": {
+      "model": "pale_lullaby:block/crimson_rose_dark"
+    },
+    "facing=up,has_nectar=true": {
+      "model": "pale_lullaby:block/crimson_rose"
+    },
+    "facing=down,has_nectar=false": {
+      "x": 180,
+      "model": "pale_lullaby:block/crimson_rose_dark"
+    },
+    "facing=down,has_nectar=true": {
+      "x": 180,
+      "model": "pale_lullaby:block/crimson_rose"
+    },
+    "facing=north,has_nectar=false": {
+      "x": 90,
+      "model": "pale_lullaby:block/crimson_rose_dark"
+    },
+    "facing=north,has_nectar=true": {
+      "x": 90,
+      "model": "pale_lullaby:block/crimson_rose"
+    },
+    "facing=south,has_nectar=false": {
+      "x": 270,
+      "model": "pale_lullaby:block/crimson_rose_dark"
+    },
+    "facing=south,has_nectar=true": {
+      "x": 270,
+      "model": "pale_lullaby:block/crimson_rose"
+    },
+    "facing=east,has_nectar=false": {
+      "x": 90,
+      "y": 90,
+      "model": "pale_lullaby:block/crimson_rose_dark"
+    },
+    "facing=east,has_nectar=true": {
+      "x": 90,
+      "y": 90,
+      "model": "pale_lullaby:block/crimson_rose"
+    },
+    "facing=west,has_nectar=false": {
+      "x": 90,
+      "y": 270,
+      "model": "pale_lullaby:block/crimson_rose_dark"
+    },
+    "facing=west,has_nectar=true": {
+      "x": 90,
+      "y": 270,
+      "model": "pale_lullaby:block/crimson_rose"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/leaves",
+  "textures": {
+    "all": "pale_lullaby:block/red_needle_leaves"
+  }
+}

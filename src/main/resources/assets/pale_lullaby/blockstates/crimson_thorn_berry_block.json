@@ -1,0 +1,29 @@
+{
+  "variants": {
+    "facing=up": {
+      "model": "pale_lullaby:block/crimson_thorn_berry_block"
+    },
+    "facing=down": {
+      "x": 180,
+      "model": "pale_lullaby:block/crimson_thorn_berry_block"
+    },
+    "facing=north": {
+      "x": 90,
+      "model": "pale_lullaby:block/crimson_thorn_berry_block"
+    },
+    "facing=south": {
+      "x": 270,
+      "model": "pale_lullaby:block/crimson_thorn_berry_block"
+    },
+    "facing=east": {
+      "x": 90,
+      "y": 90,
+      "model": "pale_lullaby:block/crimson_thorn_berry_block"
+    },
+    "facing=west": {
+      "x": 90,
+      "y": 270,
+      "model": "pale_lullaby:block/crimson_thorn_berry_block"
+    }
+  }
+}

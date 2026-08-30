@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "pale_lullaby:block/iron_maiden" },
+    "facing=east": { "model": "pale_lullaby:block/iron_maiden", "y": 90 },
+    "facing=south": { "model": "pale_lullaby:block/iron_maiden", "y": 180 },
+    "facing=west": { "model": "pale_lullaby:block/iron_maiden", "y": 270 }
+  }
+}

@@ -2,6 +2,7 @@ package com.littlh.palelullaby;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -26,6 +27,9 @@ public class ModSounds {
 
     public static void register(IEventBus modEventBus) {
         loadMusicTracksFromJson();
+        // 群系音乐统一入口：sounds.json 里挂多首曲目，由原版音乐系统随机播放
+        SOUND_EVENTS.register("pale_cradle_music",
+                () -> SoundEvent.createVariableRangeEvent(ResourceLocation.parse("pale_lullaby:pale_cradle_music")));
         SOUND_EVENTS.register(modEventBus);
     }
 
@@ -33,7 +37,8 @@ public class ModSounds {
         try {
             try (Reader reader = new InputStreamReader(
                     ModSounds.class.getResourceAsStream("/assets/pale_lullaby/music_tracks.json"))) {
-                JsonArray array = JsonParser.parseReader(reader).getAsJsonArray();
+                JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
+                JsonArray array = json.getAsJsonArray("tracks");
                 for (JsonElement elem : array) {
                     String name = elem.getAsString();
                     MUSIC_TRACK_NAMES.add(name);

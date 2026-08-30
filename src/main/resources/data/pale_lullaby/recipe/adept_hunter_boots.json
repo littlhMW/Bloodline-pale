@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "S S",
+    "L L",
+    "# #"
+  ],
+  "key": {
+    "#": {
+      "item": "pale_lullaby:silver_ingot"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "S": {
+      "item": "pale_lullaby:silver_nugget"
+    }
+  },
+  "result": {
+    "id": "pale_lullaby:adept_hunter_boots",
+    "count": 1
+  }
+}

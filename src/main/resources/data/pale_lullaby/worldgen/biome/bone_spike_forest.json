@@ -3,17 +3,23 @@
   "temperature": 0.5,
   "downfall": 0.0,
   "effects": {
-    "sky_color": 11184810,
-    "fog_color": 11184810,
-    "water_color": 11184810,
-    "water_fog_color": 11184810,
-    "grass_color": 10526880,
-    "foliage_color": 10526880,
+    "sky_color": 10465476,
+    "fog_color": 12372696,
+    "water_color": 9417942,
+    "water_fog_color": 7246772,
+    "grass_color": 13163736,
+    "foliage_color": 12638424,
     "mood_sound": {
       "sound": "minecraft:ambient.cave",
       "tick_delay": 6000,
       "block_search_extent": 8,
       "offset": 2.0
+    },
+    "music": {
+      "sound": "pale_lullaby:pale_cradle_music",
+      "min_delay": 12000,
+      "max_delay": 24000,
+      "replace_current_music": false
     }
   },
   "spawners": {
@@ -43,8 +49,10 @@
     [],
     [
       "pale_lullaby:bone_tree",
-      "pale_lullaby:sparse_wheat_patch"
+      "pale_lullaby:sparse_wheat_patch",
+      "pale_lullaby:pale_wheat_patch"
     ],
+    [],
     []
   ]
 }

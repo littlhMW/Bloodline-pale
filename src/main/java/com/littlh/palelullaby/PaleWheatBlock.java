@@ -55,11 +55,13 @@ public class PaleWheatBlock extends DoublePlantBlock {
         }
         BlockPos groundPos = pos.below();
         BlockState groundState = level.getBlockState(groundPos);
-        return groundState.is(PaleLullabyBlocks.PALE_GRASS_BLOCK.get());
+        return groundState.is(PaleLullabyBlocks.PALE_GRASS_BLOCK.get())
+                || groundState.is(PaleLullabyBlocks.PALE_EMBER_FARMLAND.get());
     }
 
     @Override
     public boolean mayPlaceOn(BlockState groundState, BlockGetter level, BlockPos pos) {
-        return groundState.is(PaleLullabyBlocks.PALE_GRASS_BLOCK.get());
+        return groundState.is(PaleLullabyBlocks.PALE_GRASS_BLOCK.get())
+                || groundState.is(PaleLullabyBlocks.PALE_EMBER_FARMLAND.get());
     }
 }

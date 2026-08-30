@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "pale_lullaby:block/frost_moonflower"
+  },
+  "render_type": "minecraft:cutout"
+}

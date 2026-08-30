@@ -1,0 +1,24 @@
+{
+  "feature": "pale_lullaby:thorn_single",
+  "placement": [
+    {
+      "type": "minecraft:block_predicate_filter",
+      "predicate": {
+        "type": "minecraft:all_of",
+        "predicates": [
+          {
+            "type": "minecraft:replaceable"
+          },
+          {
+            "type": "minecraft:matching_blocks",
+            "offset": [0, -1, 0],
+            "blocks": [
+              "pale_lullaby:soaked_mud_grass",
+              "pale_lullaby:soaked_mud"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

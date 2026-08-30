@@ -6,7 +6,13 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "pale_lullaby:crimson_thorn"
+          "name": "pale_lullaby:crimson_thorn",
+          "conditions": [
+            {
+              "condition": "minecraft:random_chance",
+              "chance": 0.5
+            }
+          ]
         }
       ],
       "conditions": [

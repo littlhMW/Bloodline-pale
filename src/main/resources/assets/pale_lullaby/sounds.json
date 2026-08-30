@@ -1,4 +1,25 @@
 {
+  "pale_cradle_music": {
+    "sounds": [
+      {
+        "name": "pale_lullaby:music/bittersweet",
+        "stream": true
+      },
+      {
+        "name": "pale_lullaby:music/tempting_secrets",
+        "stream": true
+      },
+      {
+        "name": "pale_lullaby:music/heart_of_nowhere",
+        "stream": true
+      },
+      {
+        "name": "pale_lullaby:music/awkward_meeting",
+        "stream": true
+      }
+    ],
+    "replace": true
+  },
   "pale_cradle_music.bittersweet": {
     "sounds": [
       {

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:spring_feature",
+  "config": {
+    "hole_count": 1,
+    "requires_block_below": false,
+    "rock_count": 4,
+    "state": {
+      "Name": "pale_lullaby:blood"
+    },
+    "valid_blocks": [
+      "minecraft:stone",
+      "minecraft:deepslate",
+      "minecraft:grass_block",
+      "minecraft:dirt",
+      "minecraft:gravel",
+      "minecraft:sand",
+      "minecraft:granite",
+      "minecraft:diorite",
+      "minecraft:andesite",
+      "pale_lullaby:soaked_mud",
+      "pale_lullaby:pale_grass_block"
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:undead",
+    "pale_lullaby:vampire",
+    "pale_lullaby:dried_blood_ghost",
+    "pale_lullaby:mulland",
+    "pale_lullaby:pale_minion",
+    "pale_lullaby:blood_noble",
+    "pale_lullaby:blood_lord"
+  ]
+}

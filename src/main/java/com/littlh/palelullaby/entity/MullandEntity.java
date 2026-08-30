@@ -14,9 +14,13 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -64,16 +68,23 @@ public class MullandEntity extends Monster implements GeoEntity {
     private int curseCooldown = 0;
     private int currentCurseVariant = 0;
     
-    // 【修复1】记录初始始躯干旋转角度，一阶段彻底锁死身体，只让头动
+    // 记录初始躯干朝向，一阶段彻底锁死身体
     private float lockedBodyRot = -999.0f;
     
     // 二阶段战斗状态记录
     private int recentHits = 0;
     private long lastHitTime = 0;
     private int proximityTicks = 0;
+    private LivingEntity lastAttacker = null;
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
+    /** Boss 血条：金色，玩家进入视野自动显示，远离/死亡自动移除。 */
+    private final ServerBossEvent bossEvent = (ServerBossEvent) new ServerBossEvent(
+            this.getDisplayName(), BossEvent.BossBarColor.YELLOW, BossEvent.BossBarOverlay.PROGRESS);
+
+    // 掉落动画中“脱落”的时间点（秒 → tick）：root 骨骼在 2.0-2.4s 从高位掉下
+    private static final int FALL_DROP_TICK = 44;
     private static final double WAKE_RANGE = 40.0;
     private static final int MAX_POUNCES = 5;
     private static final int MIN_POUNCES = 3;
@@ -88,11 +99,33 @@ public class MullandEntity extends Monster implements GeoEntity {
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()
                 .add(Attributes.MAX_HEALTH, 300.0D)
-                .add(Attributes.MOVEMENT_SPEED, 0.2D)
+                .add(Attributes.MOVEMENT_SPEED, 0.0D)
                 .add(Attributes.ATTACK_DAMAGE, 10.0D)
                 .add(Attributes.FOLLOW_RANGE, 64.0D)
-                .add(Attributes.ARMOR, 4.0D)
+                .add(Attributes.ARMOR, 8.0D)
+                .add(Attributes.ARMOR_TOUGHNESS, 6.0D)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1.0D);
+    }
+
+    @Override
+    public void startSeenByPlayer(ServerPlayer player) {
+        super.startSeenByPlayer(player);
+        this.bossEvent.addPlayer(player);
+    }
+
+    @Override
+    public void stopSeenByPlayer(ServerPlayer player) {
+        super.stopSeenByPlayer(player);
+        this.bossEvent.removePlayer(player);
+    }
+
+    @Override
+    public void remove(Entity.RemovalReason reason) {
+        if (!this.level().isClientSide) {
+            this.bossEvent.removeAllPlayers();
+            this.bossEvent.setVisible(false);
+        }
+        super.remove(reason);
     }
 
     @Override
@@ -144,12 +177,14 @@ public class MullandEntity extends Monster implements GeoEntity {
     public boolean hurt(DamageSource source, float amount) {
         if (this.isInvulnerableTo(source)) return false;
 
-        // 如果在待机休眠状态下被打到，强制触发苏醒
+        if (source.getEntity() instanceof LivingEntity attacker && attacker.isAlive()) {
+            this.lastAttacker = attacker;
+        }
+
         if (this.getCurrentState() == BossState.HANGING_DORMANT && !this.level().isClientSide) {
             setCurrentState(BossState.HANGING_WAKING);
         }
         
-        // 二阶段防连击防站桩
         if (this.isPhaseTwo() && !this.level().isClientSide && source.getEntity() instanceof Player) {
             long time = this.level().getGameTime();
             if (time - this.lastHitTime > 60) this.recentHits = 0;
@@ -169,44 +204,68 @@ public class MullandEntity extends Monster implements GeoEntity {
     @Override
     public void tick() {
         super.tick();
-        if (this.level().isClientSide) return;
 
-        this.stateTimer++;
-        if (this.attackCooldown > 0) this.attackCooldown--;
-        if (this.curseCooldown > 0) this.curseCooldown--;
-
-        BossState state = getCurrentState();
         boolean phaseTwo = isPhaseTwo();
+        BossState state = getCurrentState();
 
-        // 血量下降到 1/2 时转阶段
-        if (!phaseTwo && this.getHealth() <= this.getMaxHealth() / 2.0f) {
-            this.entityData.set(DATA_PHASE_TWO, true);
-            setCurrentState(BossState.FALLING);
-            phaseTwo = true;
-        }
-
-        tickState(state);
-
-        // ================== 物理与模型朝向强制控制 ==================
+        // ================== 视觉与物理双端覆盖核心 ==================
+        // 这一块必须在 isClientSide 的判断之前运行，否则客户端看不见任何改变！
+        
         if (!phaseTwo && state != BossState.FALLING) {
             // 【一阶段控制】锁死位移，去除重力和物理碰撞
             this.setDeltaMovement(Vec3.ZERO);
             this.setNoGravity(true);
             this.noPhysics = true; 
             
-            // 【修复1】初始化并锁死躯干朝向，原版MC会自动扭动身体跟随头，这里将其锁死不让身体转动
+            // 锁定躯干初始朝向（只记录一次）
             if (this.lockedBodyRot == -999.0f) {
-                this.lockedBodyRot = this.yBodyRot;
+                this.lockedBodyRot = this.getYRot();
             }
+            
+            // 强行把怪物的身体朝向重置为初始朝向，防止原版AI强行转动身体
             this.setYRot(this.lockedBodyRot);
             this.yBodyRot = this.lockedBodyRot;
+            this.yBodyRotO = this.lockedBodyRot;
             
+            // 一阶段必须是竖直悬挂，防止玩家乱动干扰俯仰角
+            this.setXRot(0.0f);
+            this.xRotO = 0.0f;
+            this.setPose(Pose.STANDING);
+            
+        } else if (state == BossState.FALLING && stateTimer < FALL_DROP_TICK) {
+            // 【二阶段掉落】动画开头仍保持悬空固定，等动画中“脱落”时刻才解除悬空固定开始掉落
+            this.setDeltaMovement(Vec3.ZERO);
+            this.setNoGravity(true);
+            this.noPhysics = true;
+            this.setPose(Pose.STANDING);
         } else {
-            // 【修复2】二阶段或下落阶段，无论是不是重载存档，强制保证重力和碰撞启用
-            // 否则施放扑咬等有Y轴初速度的技能时，会直接无视重力升天飞走！
+            // 【二阶段控制修复】
+            // 恢复物理碰撞和重力，彻底解决升天BUG
             this.setNoGravity(false);
             this.noPhysics = false;
+            
+            // 二阶段不再强写俯仰角：美术动画 animation.boss.ground_* 通过 root 骨骼旋转让模型平趴在地面
+            // 这里只恢复物理与重力，姿势交给动画驱动
+            this.setPose(Pose.STANDING);
         }
+        
+        // ================== 以下为仅服务端的逻辑 ==================
+        if (this.level().isClientSide) return;
+
+        // Boss 血条进度与名称同步
+        this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
+        this.bossEvent.setName(this.getDisplayName());
+
+        this.stateTimer++;
+        if (this.attackCooldown > 0) this.attackCooldown--;
+        if (this.curseCooldown > 0) this.curseCooldown--;
+
+        if (!phaseTwo && this.getHealth() <= this.getMaxHealth() / 2.0f) {
+            this.entityData.set(DATA_PHASE_TWO, true);
+            setCurrentState(BossState.FALLING);
+        }
+
+        tickState(state);
     }
 
     private void tickState(BossState state) {
@@ -230,7 +289,13 @@ public class MullandEntity extends Monster implements GeoEntity {
     private void tickHangingDormant() {
         if (this.tickCount % 20 == 0) {
             Player nearest = this.level().getNearestPlayer(this, WAKE_RANGE);
-            if (nearest != null && !nearest.isCreative() && !nearest.isSpectator()) {
+            boolean hasFoe = nearest != null && !nearest.isCreative() && !nearest.isSpectator();
+            if (!hasFoe) {
+                hasFoe = !this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(WAKE_RANGE),
+                        e -> e instanceof BloodHunterEntity || e instanceof net.minecraft.world.entity.npc.Villager
+                                || e instanceof FallenBloodHunterEntity).isEmpty();
+            }
+            if (hasFoe) {
                 setCurrentState(BossState.HANGING_WAKING);
             }
         }
@@ -244,12 +309,12 @@ public class MullandEntity extends Monster implements GeoEntity {
 
     private void tickHangingIdle() {
         LivingEntity target = this.getTarget();
-        // 【修复3】如果没有目标，或者距离太远，只保持发呆（return跳过攻击逻辑），不会再回到沉睡状态！
+        
+        // 如果没有目标，跳过攻击逻辑，只保留发呆巡视（不再变回沉睡状态）
         if (target == null || !target.isAlive() || target.distanceToSqr(this) > 64 * 64) {
             return;
         }
         
-        // 凝视玩家，头颅会转向玩家，但身体已经在 tick() 里锁死了
         this.getLookControl().setLookAt(target.getX(), target.getEyeY(), target.getZ(), 30f, 30f);
 
         if (stateTimer > 40 && attackCooldown <= 0) {
@@ -295,7 +360,7 @@ public class MullandEntity extends Monster implements GeoEntity {
         if (stateTimer == 10) this.playSound(SoundEvents.CHAIN_BREAK, 1.5f, 0.5f);
         if (stateTimer == 60) { this.playSound(SoundEvents.GENERIC_BIG_FALL, 2.0f, 0.5f); performShockwave(); }
         if (stateTimer >= 260) {
-            this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.42D);
+            this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.36D);
             setCurrentState(BossState.GROUND_IDLE);
         }
     }
@@ -338,7 +403,6 @@ public class MullandEntity extends Monster implements GeoEntity {
         LivingEntity target = this.getTarget();
         if (stateTimer == 8 && target != null) {
             Vec3 dir = target.position().subtract(this.position()).normalize();
-            // 在二阶段物理/重力强制开启后，赋予带有Y轴的初速度，会实现向前跃起的扑咬而不再飞天
             this.setDeltaMovement(dir.x * 1.5, 0.2, dir.z * 1.5);
             this.playSound(SoundEvents.WOLF_GROWL, 1.5f, 0.5f);
         }
@@ -363,6 +427,10 @@ public class MullandEntity extends Monster implements GeoEntity {
     }
 
     private void tickJumpBack() {
+        // 进入后跳立刻打断追踪路径，避免残留导航把向后位移拉回
+        if (stateTimer == 0 || stateTimer == 1) {
+            this.getNavigation().stop();
+        }
         if (stateTimer == 8) {
             AABB sweepBox = this.getBoundingBox().inflate(3.5);
             for (LivingEntity entity : this.level().getEntitiesOfClass(LivingEntity.class, sweepBox)) {
@@ -377,8 +445,15 @@ public class MullandEntity extends Monster implements GeoEntity {
 
             LivingEntity target = this.getTarget();
             if (target != null) {
-                Vec3 dir = this.position().subtract(target.position()).normalize();
-                this.setDeltaMovement(dir.x * 1.3, 0.4, dir.z * 1.3); // 向后跳跃反冲
+                Vec3 dir = this.position().subtract(target.position());
+                double horizontal = Math.sqrt(dir.x * dir.x + dir.z * dir.z);
+                if (horizontal < 1.0E-4) {
+                    dir = new Vec3(this.getLookAngle().x, 0, this.getLookAngle().z).scale(-1);
+                }
+                dir = dir.normalize();
+                this.setDeltaMovement(dir.x * 1.6, 0.55, dir.z * 1.6);
+                this.hasImpulse = true;
+                this.hurtMarked = true;
             }
         }
         if (stateTimer >= 30) {
@@ -440,6 +515,10 @@ public class MullandEntity extends Monster implements GeoEntity {
     private void summonMinions() {
         this.playSound(SoundEvents.EVOKER_PREPARE_SUMMON, 2.0f, 0.5f);
         int count = 3 + this.random.nextInt(3);
+        // 仆从优先攻击墓兰德当前仇恨目标，否则攻击最近攻击过墓兰德的目标
+        LivingEntity summonTarget = (this.getTarget() != null && this.getTarget().isAlive())
+                ? this.getTarget()
+                : (this.lastAttacker != null && this.lastAttacker.isAlive() ? this.lastAttacker : null);
         for (int i = 0; i < count; i++) {
             PaleMinionEntity minion = PaleLullabyEntities.PALE_MINION.get().create(this.level());
             if (minion != null) {
@@ -447,7 +526,11 @@ public class MullandEntity extends Monster implements GeoEntity {
                 double dx = Math.cos(angle) * 4.0;
                 double dz = Math.sin(angle) * 4.0;
                 minion.setPos(this.getX() + dx, this.getY() - 2, this.getZ() + dz);
-                minion.setTarget(this.getTarget());
+                // 刚召唤的仆从 0.5 秒无敌，防止落地摔死
+                minion.invulnerableTime = 10;
+                if (summonTarget != null) {
+                    minion.setTarget(summonTarget);
+                }
                 this.level().addFreshEntity(minion);
             }
         }
@@ -470,7 +553,7 @@ public class MullandEntity extends Monster implements GeoEntity {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new BossCombatGoal(this));
-        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, false));
+        FactionTargets.register(this, PaleLullabyFactions.MULLAND);
     }
 
     private static class BossCombatGoal extends Goal {
@@ -480,7 +563,7 @@ public class MullandEntity extends Monster implements GeoEntity {
         @Override public void tick() { 
             LivingEntity target = boss.getTarget(); 
             if (target != null) { 
-                boss.getNavigation().moveTo(target, 1.4D); 
+                boss.getNavigation().moveTo(target, 1.15D); 
                 boss.getLookControl().setLookAt(target.getX(), boss.getEyeY(), target.getZ(), 30f, 30f); 
             } 
         }

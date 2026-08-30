@@ -1,9 +1,0 @@
-{
-  "type": "minecraft:random_patch",
-  "config": {
-    "tries": 32,
-    "xz_spread": 4,
-    "y_spread": 2,
-    "feature": "pale_lullaby:bone_spike_single"
-  }
-}

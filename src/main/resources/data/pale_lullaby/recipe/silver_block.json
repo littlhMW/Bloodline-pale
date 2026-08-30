@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "pale_lullaby:silver_ingot"
+    }
+  },
+  "result": {
+    "id": "pale_lullaby:silver_block",
+    "count": 1
+  }
+}

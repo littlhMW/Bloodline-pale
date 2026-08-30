@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_farmland",
+  "textures": {
+    "dirt": "pale_lullaby:block/pale_ember",
+    "top": "pale_lullaby:block/pale_ember"
+  }
+}

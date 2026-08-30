@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "pale_lullaby:pale_grass_block"
+    "pale_lullaby:withered_dirt",
+    "pale_lullaby:withered_grass_block"
   ]
 }

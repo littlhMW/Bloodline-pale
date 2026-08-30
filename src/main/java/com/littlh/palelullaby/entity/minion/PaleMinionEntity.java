@@ -1,6 +1,9 @@
 package com.littlh.palelullaby.entity.minion;
 
+import com.littlh.palelullaby.entity.HunterMob;
+import com.littlh.palelullaby.entity.DriedBloodGhostEntity;
 import com.littlh.palelullaby.entity.MullandEntity;
+import com.littlh.palelullaby.entity.PaleLullabyFactions;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -13,6 +16,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -60,10 +64,25 @@ public class PaleMinionEntity extends Monster implements GeoEntity {
         this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
 
+        this.targetSelector.addGoal(0, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        // 仆从会攻击血猎（血猎是 PathfinderMob 而非 Monster），但不会攻击墓兰德/吸血鬼/枯血鬼/同类
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10,
-                true, false, e -> e instanceof Mob mob && mob instanceof Monster
-                        && !(mob instanceof PaleMinionEntity) && !(mob instanceof MullandEntity)));
+                true, false, e -> {
+                    if (!(e instanceof Mob mob)) {
+                        return false;
+                    }
+                    PaleLullabyFactions f = PaleLullabyFactions.of(mob);
+                    if (f == PaleLullabyFactions.VAMPIRE || f == PaleLullabyFactions.MULLAND) {
+                        return false;
+                    }
+                    if (mob instanceof PaleMinionEntity) {
+                        return false;
+                    }
+                    return mob instanceof Monster || f == PaleLullabyFactions.HUNTER
+                            || f == PaleLullabyFactions.MAD_HUNTER
+                            || f == PaleLullabyFactions.MAD_VAMPIRE;
+                }));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -73,7 +92,8 @@ public class PaleMinionEntity extends Monster implements GeoEntity {
                 .add(Attributes.MOVEMENT_SPEED, 0.3D)
                 .add(Attributes.ATTACK_DAMAGE, 6.0D)
                 .add(Attributes.FOLLOW_RANGE, 40.0D)
-                .add(Attributes.ARMOR, 2.0D);
+                .add(Attributes.ARMOR, 2.0D)
+                  .add(Attributes.ARMOR_TOUGHNESS, 1.0D);
     }
 
     // ==================== GeckoLib 动画控制 ====================
@@ -157,12 +177,18 @@ public class PaleMinionEntity extends Monster implements GeoEntity {
             explodeTimer--;
             // 自爆时强制在原地停留，不让它一边爆炸一边跑
             this.setDeltaMovement(0, this.getDeltaMovement().y, 0); 
+            // 爆炸冲击早于动画结束约 0.6 秒（12 tick），与动画中的爆裂视觉对齐
+            if (explodeTimer == 12) {
+                performBlast();
+            }
             // 粒子特效
             if (explodeTimer % 5 == 0) {
                 this.level().broadcastEntityEvent(this, (byte) 10);
             }
         } else if (explodeTimer == 0) {
-            performExplosion();
+            // 动画播完后死亡
+            this.explodeTimer = -1;
+            this.hurt(this.damageSources().generic(), Float.MAX_VALUE);
         }
     }
 
@@ -176,11 +202,9 @@ public class PaleMinionEntity extends Monster implements GeoEntity {
         this.setTarget(null);
     }
 
-    private void performExplosion() {
-        // -1 防止重复触发
-        this.explodeTimer = -1;
-        this.level().explode(this, this.getX(), this.getY(), this.getZ(), 2.5F, Level.ExplosionInteraction.MOB);
-        this.hurt(this.damageSources().generic(), Float.MAX_VALUE);
+    /** 爆炸冲击：不破坏方块，只造成伤害（在动画结束前 0.6 秒触发）。 */
+    private void performBlast() {
+        this.level().explode(this, this.getX(), this.getY(), this.getZ(), 2.5F, Level.ExplosionInteraction.NONE);
     }
 
     @Override

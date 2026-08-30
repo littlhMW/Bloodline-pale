@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "pale_lullaby:silver_block"
+    }
+  ],
+  "result": {
+    "id": "pale_lullaby:silver_ingot",
+    "count": 9
+  }
+}

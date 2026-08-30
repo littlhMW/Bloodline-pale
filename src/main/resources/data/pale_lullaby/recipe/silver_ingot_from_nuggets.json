@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "pale_lullaby:silver_nugget"
+    }
+  },
+  "result": {
+    "id": "pale_lullaby:silver_ingot",
+    "count": 1
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "multipart": [
+    { "apply": { "model": "pale_lullaby:block/withered_mistletoe" }, "when": { "north": "true" } },
+    { "apply": { "model": "pale_lullaby:block/withered_mistletoe" }, "when": { "east": "false", "north": "false", "south": "false", "up": "false", "west": "false" } },
+    { "apply": { "model": "pale_lullaby:block/withered_mistletoe", "uvlock": true, "y": 90 }, "when": { "east": "true" } },
+    { "apply": { "model": "pale_lullaby:block/withered_mistletoe", "uvlock": true, "y": 90 }, "when": { "east": "false", "north": "false", "south": "false", "up": "false", "west": "false" } },
+    { "apply": { "model": "pale_lullaby:block/withered_mistletoe", "uvlock": true, "y": 180 }, "when": { "south": "true" } },
+    { "apply": { "model": "pale_lullaby:block/withered_mistletoe", "uvlock": true, "y": 180 }, "when": { "east": "false", "north": "false", "south": "false", "up": "false", "west": "false" } },
+    { "apply": { "model": "pale_lullaby:block/withered_mistletoe", "uvlock": true, "y": 270 }, "when": { "west": "true" } },
+    { "apply": { "model": "pale_lullaby:block/withered_mistletoe", "uvlock": true, "y": 270 }, "when": { "east": "false", "north": "false", "south": "false", "up": "false", "west": "false" } },
+    { "apply": { "model": "pale_lullaby:block/withered_mistletoe", "uvlock": true, "x": 270 }, "when": { "up": "true" } },
+    { "apply": { "model": "pale_lullaby:block/withered_mistletoe", "uvlock": true, "x": 270 }, "when": { "east": "false", "north": "false", "south": "false", "up": "false", "west": "false" } }
+  ]
+}

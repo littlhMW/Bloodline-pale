@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "VFV",
+    "LTL"
+  ],
+  "key": {
+    "V": {
+      "item": "minecraft:vine"
+    },
+    "F": {
+      "tag": "minecraft:small_flowers"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "T": {
+      "item": "minecraft:string"
+    }
+  },
+  "result": {
+    "id": "pale_lullaby:herbalist_wide_brimmed_hat",
+    "count": 1
+  }
+}

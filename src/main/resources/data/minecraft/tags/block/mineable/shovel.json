@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "pale_lullaby:withered_dirt",
+    "pale_lullaby:withered_grass_block",
+    "pale_lullaby:soaked_mud",
+    "pale_lullaby:soaked_mud_grass",
+    "pale_lullaby:pale_ember",
+    "pale_lullaby:pale_grass_block"
+  ]
+}

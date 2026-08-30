@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:random_patch",
+  "config": {
+    "tries": 6,
+    "xz_spread": 7,
+    "y_spread": 3,
+    "feature": "pale_lullaby:widow_thorn_single_placed"
+  }
+}

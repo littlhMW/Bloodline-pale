@@ -1,0 +1,14 @@
+{
+  "type": "lithostitched:force_placement",
+  "dimension": "minecraft:overworld",
+  "priority": 1505,
+  "biome": "pale_lullaby:misty_flower_plains",
+  "parameters": {
+    "temperature": [0.35, 0.55],
+    "humidity": [0.15, 0.3],
+    "continentalness": [-0.11, 0.3],
+    "erosion": [0.05, 0.45],
+    "weirdness": [-0.2, 0.2],
+    "depth": [-0.1, 0.3]
+  }
+}

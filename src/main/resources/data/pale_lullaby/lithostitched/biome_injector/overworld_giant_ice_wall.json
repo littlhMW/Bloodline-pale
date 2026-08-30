@@ -1,0 +1,32 @@
+{
+  "type": "lithostitched:force_placement",
+  "dimension": "minecraft:overworld",
+  "priority": 1503,
+  "biome": "pale_lullaby:giant_ice_wall",
+  "parameters": {
+    "temperature": [
+      -1.0,
+      -0.6
+    ],
+    "humidity": [
+      -1.0,
+      0.4
+    ],
+    "continentalness": [
+      -0.05,
+      1.0
+    ],
+    "erosion": [
+      -1.0,
+      1.0
+    ],
+    "weirdness": [
+      -1.0,
+      1.0
+    ],
+    "depth": [
+      -1.0,
+      1.0
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "com.littlh.palelullaby.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "pale_lullaby.refmap.json",
+  "mixins": [
+    "IceWallStructureHeightMixin",
+    "StructureGenerateSeedMixin",
+    "StructureTemplateDirtPathMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

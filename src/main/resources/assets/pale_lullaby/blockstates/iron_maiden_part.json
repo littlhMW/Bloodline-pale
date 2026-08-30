@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "facing=north,top=false": { "model": "pale_lullaby:block/iron_maiden_part" },
+    "facing=south,top=false": { "model": "pale_lullaby:block/iron_maiden_part" },
+    "facing=east,top=false": { "model": "pale_lullaby:block/iron_maiden_part" },
+    "facing=west,top=false": { "model": "pale_lullaby:block/iron_maiden_part" },
+    "facing=north,top=true": { "model": "pale_lullaby:block/iron_maiden_part" },
+    "facing=south,top=true": { "model": "pale_lullaby:block/iron_maiden_part" },
+    "facing=east,top=true": { "model": "pale_lullaby:block/iron_maiden_part" },
+    "facing=west,top=true": { "model": "pale_lullaby:block/iron_maiden_part" }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "###",
+    "#X#",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:white_wool"
+    },
+    "X": {
+      "item": "pale_lullaby:novice_hunter_jacket"
+    }
+  },
+  "result": {
+    "id": "pale_lullaby:cloth_hunter_jacket",
+    "count": 1
+  }
+}

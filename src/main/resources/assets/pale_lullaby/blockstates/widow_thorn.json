@@ -1,0 +1,76 @@
+{
+  "variants": {
+    "half=lower,stage=dormant,age=0": {
+      "model": "pale_lullaby:block/widow_thorn_lower"
+    },
+    "half=lower,stage=dormant,age=1": {
+      "model": "pale_lullaby:block/widow_thorn_lower"
+    },
+    "half=lower,stage=dormant,age=2": {
+      "model": "pale_lullaby:block/widow_thorn_lower"
+    },
+    "half=lower,stage=dormant,age=3": {
+      "model": "pale_lullaby:block/widow_thorn_lower"
+    },
+    "half=lower,stage=flowering,age=0": {
+      "model": "pale_lullaby:block/widow_thorn_flowering_lower"
+    },
+    "half=lower,stage=flowering,age=1": {
+      "model": "pale_lullaby:block/widow_thorn_flowering_lower"
+    },
+    "half=lower,stage=flowering,age=2": {
+      "model": "pale_lullaby:block/widow_thorn_flowering_lower"
+    },
+    "half=lower,stage=flowering,age=3": {
+      "model": "pale_lullaby:block/widow_thorn_flowering_lower"
+    },
+    "half=lower,stage=fruiting,age=0": {
+      "model": "pale_lullaby:block/widow_thorn_fruiting_lower"
+    },
+    "half=lower,stage=fruiting,age=1": {
+      "model": "pale_lullaby:block/widow_thorn_fruiting_lower"
+    },
+    "half=lower,stage=fruiting,age=2": {
+      "model": "pale_lullaby:block/widow_thorn_fruiting_lower"
+    },
+    "half=lower,stage=fruiting,age=3": {
+      "model": "pale_lullaby:block/widow_thorn_fruiting_lower"
+    },
+    "half=upper,stage=dormant,age=0": {
+      "model": "pale_lullaby:block/widow_thorn_upper"
+    },
+    "half=upper,stage=dormant,age=1": {
+      "model": "pale_lullaby:block/widow_thorn_upper"
+    },
+    "half=upper,stage=dormant,age=2": {
+      "model": "pale_lullaby:block/widow_thorn_upper"
+    },
+    "half=upper,stage=dormant,age=3": {
+      "model": "pale_lullaby:block/widow_thorn_upper"
+    },
+    "half=upper,stage=flowering,age=0": {
+      "model": "pale_lullaby:block/widow_thorn_flowering_upper"
+    },
+    "half=upper,stage=flowering,age=1": {
+      "model": "pale_lullaby:block/widow_thorn_flowering_upper"
+    },
+    "half=upper,stage=flowering,age=2": {
+      "model": "pale_lullaby:block/widow_thorn_flowering_upper"
+    },
+    "half=upper,stage=flowering,age=3": {
+      "model": "pale_lullaby:block/widow_thorn_flowering_upper"
+    },
+    "half=upper,stage=fruiting,age=0": {
+      "model": "pale_lullaby:block/widow_thorn_fruiting_upper"
+    },
+    "half=upper,stage=fruiting,age=1": {
+      "model": "pale_lullaby:block/widow_thorn_fruiting_upper"
+    },
+    "half=upper,stage=fruiting,age=2": {
+      "model": "pale_lullaby:block/widow_thorn_fruiting_upper"
+    },
+    "half=upper,stage=fruiting,age=3": {
+      "model": "pale_lullaby:block/widow_thorn_fruiting_upper"
+    }
+  }
+}

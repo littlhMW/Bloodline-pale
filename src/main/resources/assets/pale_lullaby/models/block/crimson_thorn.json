@@ -1,6 +1,48 @@
 {
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "pale_lullaby:block/crimson_thorn"
-  }
+	"parent": "minecraft:block/block",
+	"texture_size": [64, 64],
+	"textures": {
+		"0": "pale_lullaby:block/crimson_thorn",
+		"particle": "pale_lullaby:block/crimson_thorn"
+	},
+	"elements": [
+		{
+			"from": [4, 4, 4],
+			"to": [12, 12, 12],
+			"faces": {
+				"north": {"uv": [2, 2, 4, 4], "texture": "#0"},
+				"east": {"uv": [0, 2, 2, 4], "texture": "#0"},
+				"south": {"uv": [6, 2, 8, 4], "texture": "#0"},
+				"west": {"uv": [4, 2, 6, 4], "texture": "#0"},
+				"up": {"uv": [4, 2, 2, 0], "texture": "#0"},
+				"down": {"uv": [6, 0, 4, 2], "texture": "#0"}
+			}
+		},
+		{
+			"from": [0, 0, 8],
+			"to": [16, 16, 8],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [0, 4, 4, 8], "texture": "#0"},
+				"east": {"uv": [0, 4, 0, 8], "texture": "#0"},
+				"south": {"uv": [4, 4, 8, 8], "texture": "#0"},
+				"west": {"uv": [4, 4, 4, 8], "texture": "#0"},
+				"up": {"uv": [4, 4, 0, 4], "texture": "#0"},
+				"down": {"uv": [8, 4, 4, 4], "texture": "#0"}
+			}
+		},
+		{
+			"from": [8, 0, 0],
+			"to": [8, 16, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [4, 8, 4, 12], "texture": "#0"},
+				"east": {"uv": [0, 8, 4, 12], "texture": "#0"},
+				"south": {"uv": [8, 8, 8, 12], "texture": "#0"},
+				"west": {"uv": [4, 8, 8, 12], "texture": "#0"},
+				"up": {"uv": [4, 8, 4, 4], "texture": "#0"},
+				"down": {"uv": [4, 4, 4, 8], "texture": "#0"}
+			}
+		}
+	]
 }

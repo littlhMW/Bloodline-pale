@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "pale_lullaby:block/bone_sapling"
+  }
+}
